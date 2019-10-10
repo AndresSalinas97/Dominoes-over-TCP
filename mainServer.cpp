@@ -1,6 +1,6 @@
 /**
  * @file    mainServer.cpp
- * @author  Andres Salinas Lima
+ * @author  Andrés Salinas Lima
  * @date    07/10/2019
  * @brief   Servidor TCP para el juego del Domino: Gestiona clientes, usuarios,
  *          partidas y la logica del juego
