@@ -26,6 +26,7 @@ using std::cin;
 using std::endl;
 
 
+// TODO: Capturar señales (ctrl+c)
 int main(int argc, char **argv) {
     // Se compruebban y procesan los argumentos pasados por la línea de comandos:
     if (argc != 2) {
@@ -43,56 +44,59 @@ int main(int argc, char **argv) {
     socklen_t server_address_length = sizeof(server_address);
 
 
-    // Se abre el socket cliente:
-    int client_socket = socket(AF_INET, SOCK_STREAM, 0);
-    if (client_socket < 0) {
-        cerr << "No se puede abrir el socket cliente: " << strerror(errno) << endl;
+    // Se abre el socket del cliente:
+    int sd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sd < 0) {
+        cerr << "No se puede abrir el socket: " << strerror(errno) << endl;
         exit(EXIT_FAILURE);
     }
 
 
     // Se solicita la conexión con el servidor:
-    if (connect(client_socket, (struct sockaddr *) &server_address, server_address_length) < 0) {
+    if (connect(sd, (struct sockaddr *) &server_address, server_address_length) < 0) {
         cerr << "Error al conectar con el servidor: " << strerror(errno) << endl;
-        close(client_socket);
+        close(sd);
         exit(EXIT_FAILURE);
     }
+
+
+    // Inicializamos los conjuntos fd_set para la función select()
+    fd_set read_fds, aux_fds; // Sets de descriptores para la funcion select()
+    FD_ZERO(&aux_fds); // Vacía el el set
+    FD_ZERO(&read_fds); // Vacía el set
+    FD_SET((unsigned) 0, &read_fds); // Añade stdin al set de descriptores de lectura
+    FD_SET(sd, &read_fds); // Añade el socket al set de descriptores de lectura
 
 
     // Intercambio de mensajes con el servidor:
     char message_received[MSG_SIZE], message_sent[MSG_SIZE];
     bool end = false;
-    fd_set read_fds, aux_fds; // Sets de descriptores para la funcion select()
-    FD_ZERO(&aux_fds); // Vacía el el set
-    FD_ZERO(&read_fds); // Vacía el set
-    FD_SET((unsigned) STDIN_FILENO, &read_fds); // Añade stdin al set de descriptores de lectura
-    FD_SET(client_socket, &read_fds); // Añade el socket al set de descriptores de lectura
-
     do {
         aux_fds = read_fds; // Inicializamos aux_fds antes de llamar a select()
 
-        if ((select(client_socket + 1, &aux_fds, nullptr, nullptr, nullptr)) < 0) {
+        // select() duerme el proceso hasta que haya datos disponibles en alguno de los sockets del set
+        if ((select(sd + 1, &aux_fds, nullptr, nullptr, nullptr)) < 0) {
             cerr << "Error en select: " << strerror(errno) << endl;
             end = true;
         }
 
-        if (FD_ISSET(client_socket, &aux_fds)) {
-            // Hemos recibido un mensaje del servidor
+        if (FD_ISSET(sd, &aux_fds)) {
+            // Hemos recibido un mensaje del servidor en el socket
 
             bzero(message_received, sizeof(message_received));
 
-            if ((recv(client_socket, message_received, sizeof(message_received), 0)) < 0) {
+            if ((recv(sd, message_received, sizeof(message_received), 0)) < 0) {
                 cerr << "Error al recibir mensaje del servidor: " << strerror(errno) << endl;
                 end = true;
             }
 
             cout << message_received << endl;
 
-            // TODO: Desconectar cliente si el servidor nos rechaza
+            // TODO: Desconectar cliente si el servidor nos rechaza o algo
             if (strcmp(message_received, "") == 0)
                 end = true;
 
-        } else if (FD_ISSET(STDIN_FILENO, &aux_fds)) {
+        } else if (FD_ISSET(0, &aux_fds)) {
             // El usuario ha tecleado un mensaje
 
             bzero(message_sent, sizeof(message_sent));
@@ -100,7 +104,7 @@ int main(int argc, char **argv) {
             cin.get(message_sent, MSG_SIZE);
             cin.ignore();
 
-            if ((send(client_socket, message_sent, sizeof(message_sent), 0)) < 0) {
+            if ((send(sd, message_sent, sizeof(message_sent), 0)) < 0) {
                 cerr << "Error al enviar mensaje al servidor: " << strerror(errno) << endl;
                 end = true;
             }
@@ -110,5 +114,5 @@ int main(int argc, char **argv) {
         }
     } while (!end);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
