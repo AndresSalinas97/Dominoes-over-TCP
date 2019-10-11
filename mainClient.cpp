@@ -28,7 +28,7 @@ using std::endl;
 
 // TODO: Capturar señales (ctrl+c)
 int main(int argc, char **argv) {
-    // Se compruebban y procesan los argumentos pasados por la línea de comandos:
+    // Se comprueban y procesan los argumentos pasados por la línea de comandos:
     if (argc != 2) {
         cerr << "Uso del programa: " << argv[0] << " direcciónIPservidor" << endl;
         exit(EXIT_FAILURE);
@@ -64,12 +64,12 @@ int main(int argc, char **argv) {
     fd_set read_fds, aux_fds; // Sets de descriptores para la funcion select()
     FD_ZERO(&aux_fds); // Vacía el el set
     FD_ZERO(&read_fds); // Vacía el set
-    FD_SET((unsigned) 0, &read_fds); // Añade stdin al set de descriptores de lectura
+    FD_SET(0, &read_fds); // Añade stdin al set de descriptores de lectura
     FD_SET(sd, &read_fds); // Añade el socket al set de descriptores de lectura
 
 
     // Intercambio de mensajes con el servidor:
-    char message_received[MSG_SIZE], message_sent[MSG_SIZE];
+    char received_message[MSG_SIZE], sent_message[MSG_SIZE];
     bool end = false;
     do {
         aux_fds = read_fds; // Inicializamos aux_fds antes de llamar a select()
@@ -83,33 +83,33 @@ int main(int argc, char **argv) {
         if (FD_ISSET(sd, &aux_fds)) {
             // Hemos recibido un mensaje del servidor en el socket
 
-            bzero(message_received, sizeof(message_received));
+            bzero(received_message, sizeof(received_message));
 
-            if ((recv(sd, message_received, sizeof(message_received), 0)) < 0) {
+            if ((recv(sd, received_message, sizeof(received_message), 0)) < 0) {
                 cerr << "Error al recibir mensaje del servidor: " << strerror(errno) << endl;
                 end = true;
             }
 
-            cout << message_received << endl;
+            cout << received_message << endl;
 
             // TODO: Desconectar cliente si el servidor nos rechaza o algo
-            if (strcmp(message_received, "") == 0)
+            if (strcmp(received_message, "") == 0)
                 end = true;
 
         } else if (FD_ISSET(0, &aux_fds)) {
             // El usuario ha tecleado un mensaje
 
-            bzero(message_sent, sizeof(message_sent));
+            bzero(sent_message, sizeof(sent_message));
 
-            cin.get(message_sent, MSG_SIZE);
+            cin.get(sent_message, MSG_SIZE);
             cin.ignore();
 
-            if ((send(sd, message_sent, sizeof(message_sent), 0)) < 0) {
+            if ((send(sd, sent_message, sizeof(sent_message), 0)) < 0) {
                 cerr << "Error al enviar mensaje al servidor: " << strerror(errno) << endl;
                 end = true;
             }
 
-            if (strcmp(message_sent, "SALIR") == 0)
+            if (strcmp(sent_message, "SALIR") == 0)
                 end = true;
         }
     } while (!end);
