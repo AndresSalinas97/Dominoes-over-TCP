@@ -2,9 +2,11 @@
  * @file    mainClient.cpp
  * @author  Andrés Salinas Lima
  * @date    07/10/2019
- * @brief   Cliente para servidor TCP: Envía y recibe cadenas de texto
+ * @brief   Cliente para servidor TCP: Envía y recibe cadenas de texto.
  */
 
+
+#include "constants.h"
 
 #include <iostream>
 #include <cstdlib>
@@ -14,10 +16,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
-
-#define SERVER_PORT 2050 // Puerto en el que el servidor acepta el servicio
-#define MSG_SIZE 250     // Longitud máxima de los mensajes entre cliente y servidor
 
 
 using std::cout;
@@ -34,6 +32,7 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
     char *server_IP_address = argv[1];
+    // TODO: Usar getServByName()
 
 
     // Se rellenan los campos de la estructura de la dirección del servidor
@@ -74,7 +73,8 @@ int main(int argc, char **argv) {
     do {
         aux_fds = read_fds; // Inicializamos aux_fds antes de llamar a select()
 
-        // select() duerme el proceso hasta que haya datos disponibles en alguno de los sockets del set
+        // select() duerme el proceso hasta que haya datos disponibles en alguno
+        // de los sockets del set
         if ((select(my_socket + 1, &aux_fds, nullptr, nullptr, nullptr)) < 0) {
             cerr << "Error en select: " << strerror(errno) << endl;
             end = true;
@@ -112,7 +112,10 @@ int main(int argc, char **argv) {
             if (strcmp(sent_message, "SALIR") == 0)
                 end = true;
         }
+        fflush(stdout);
+        fflush(stderr);
     } while (!end);
+
 
     return EXIT_SUCCESS;
 }
