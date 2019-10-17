@@ -1,8 +1,8 @@
 /**
- * @file    ServerSocket.cpp
+ * @file    Socket.cpp
  * @author  Andrés Salinas Lima
  * @date    17/10/2019
- * @brief   Declaración de la clase ServerSocket: Abre, habilita y cierra
+ * @brief   Declaración de la clase Socket: Abre, habilita y cierra
  *          sockets para el cliente y el servidor.
  */
 
@@ -38,7 +38,7 @@ public:
      * Realiza las operaciones necesarias para que un socket cliente se
      * comunique con el servidor en la dirección especificada.
      */
-    void prepareClientSocket(char* serverIPAddress);
+    void prepareClientSocket(const char *serverIPAddress);
 
     /**
      * Se cierra el socket.
@@ -47,7 +47,7 @@ public:
 
 
 private:
-    int socketDescriptor;
+    int socketDescriptor; // Descriptor del socket
 
     /**
      * (Solo para socket servidor)

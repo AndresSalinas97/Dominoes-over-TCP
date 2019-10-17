@@ -2,7 +2,7 @@
  * @file    mainClient.cpp
  * @author  Andrés Salinas Lima
  * @date    07/10/2019
- * @brief   Cliente para servidor TCP: Envía y recibe cadenas de texto.
+ * @brief   Main del Cliente para servidor TCP: Envía y recibe cadenas de texto.
  */
 
 
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
         // select() duerme el proceso hasta que haya datos disponibles en alguno
         // de los sockets del set
         if ((select(socketDescriptor + 1, &auxFDS, nullptr, nullptr, nullptr)) < 0) {
-            cerr << "Error en select: " << strerror(errno) << endl;
+            cerr << "Error en select(): " << strerror(errno) << endl;
             end = true;
         }
 
