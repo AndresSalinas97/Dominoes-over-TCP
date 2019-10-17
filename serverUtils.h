@@ -13,7 +13,6 @@
 #include <sys/socket.h>
 
 
-int prepareServerSocket();
 void handleUserInput();
 void handleNewClient(int my_socket, fd_set &read_fds);
 void handleGoneClient(int client_socket, fd_set &read_fds);

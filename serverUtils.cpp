@@ -22,52 +22,6 @@ using std::cerr;
 using std::endl;
 
 
-int prepareServerSocket() {
-    // Se abre el socket del servidor
-    int sd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sd < 0) {
-        cerr << "No se puede abrir el socket: " << strerror(errno) << endl;
-        exit(EXIT_FAILURE);
-    }
-
-    // Para permitir que otro programa reutilice el puerto sin tener que esperar
-    // el tiempo de espera (TIME_WAIT en el caso de TCP)
-    int on = 1;
-    if ((setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on))) < 0) {
-        cerr << "Error en setsockopt(): " << strerror(errno) << endl;
-        close(sd);
-        exit(EXIT_FAILURE);
-    }
-
-    // Se rellenan los campos de la estructura de la dirección del servidor
-    // (necesario para la llamada a la funcion bind())
-    struct sockaddr_in server_address = {};
-    server_address.sin_family = AF_INET;
-    server_address.sin_port = htons(SERVER_PORT);
-    server_address.sin_addr.s_addr = htonl(INADDR_ANY); // Permite recibir
-    // paquetes destinados a cualquiera de las interfaces
-
-    // Asociamos el socket a un puerto (para decirle al SO que deseamos atender
-    // a un determinado servicio, de forma que cuando llegue un mensaje por ese
-    // servicio nos avise)
-    if (bind(sd, (struct sockaddr *) &server_address,
-             sizeof(server_address)) < 0) {
-        cerr << "Error en bind(): " << strerror(errno) << endl;
-        close(sd);
-        exit(EXIT_FAILURE);
-    }
-
-    // Habilitamos el socket para que pueda recibir conexiones
-    if (listen(sd, 1) < 0) {
-        cerr << "Error en listen(): " << strerror(errno) << endl;
-        close(sd);
-        exit(EXIT_FAILURE);
-    }
-
-    return sd;
-}
-
-
 void handleUserInput()
 {
     // TODO

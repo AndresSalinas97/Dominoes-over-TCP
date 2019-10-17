@@ -10,6 +10,7 @@
 #include "constants.h"
 #include "serverUtils.h"
 #include "Client.h"
+#include "Socket.h"
 
 #include <iostream>
 #include <cstdlib>
@@ -27,22 +28,25 @@ using std::endl;
 
 // TODO: Capturar señales (ctrl+c)
 int main() {
-    int my_socket;
+    // Abrimos el socket y lo habilitamos para que pueda recibir conexiones
+    Socket socket;
+    socket.prepareServerSocket();
+
+
+
+
+
+    int socketDescriptor = socket.getDescriptor();
     fd_set read_fds, aux_fds; // Sets de descriptores para la funcion select()
     char received_message[MSG_SIZE];
     bool end = false;
     int n_received;
 
-
-    // Abrimos el socket y lo habilitamos para que pueda recibir conexiones
-    my_socket = prepareServerSocket();
-
-
     // Inicializamos los conjuntos fd_set para la función select()
     FD_ZERO(&aux_fds); // Vacía el el set
     FD_ZERO(&read_fds); // Vacía el set
     FD_SET((unsigned) 0, &read_fds); // Añade stdin al set de descriptores de lectura
-    FD_SET(my_socket, &read_fds); // Añade el socket al set de descriptores de lectura
+    FD_SET(socketDescriptor, &read_fds); // Añade el socket al set de descriptores de lectura
 
 
     // Intercambio de mensajes
@@ -63,9 +67,9 @@ int main() {
                 if (active_socket == 0) {
                     // El usuario ha tecleado un mensaje
                     handleUserInput();
-                } else if (active_socket == my_socket) {
+                } else if (active_socket == socketDescriptor) {
                     // Tenemos nuevos datos en el socket del servidor
-                    handleNewClient(my_socket, read_fds);
+                    handleNewClient(socketDescriptor, read_fds);
                 } else {
                     // Tenemos nuevos datos en el socket de algún cliente
                     bzero(received_message, sizeof(received_message));
@@ -89,6 +93,6 @@ int main() {
     } while (!end);
 
 
-    close(my_socket);
+    close(socketDescriptor);
     return EXIT_SUCCESS;
 }
