@@ -15,6 +15,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <csignal>
+#include <unistd.h>
 
 
 using std::cout;
@@ -23,7 +25,12 @@ using std::cin;
 using std::endl;
 
 
-// TODO: Capturar señales (ctrl+c)
+int socketDescriptor;
+
+
+void signalHandler(int);
+
+
 int main(int argc, char **argv) {
     // Se comprueban y procesan los argumentos pasados por la línea de comandos
     if (argc != 2) {
@@ -36,7 +43,7 @@ int main(int argc, char **argv) {
     // Abrimos el socket y lo conectamos al servidor
     Socket socket;
     socket.prepareClientSocket(serverIPAddress);
-    int socketDescriptor = socket.getDescriptor();
+    socketDescriptor = socket.getDescriptor();
 
 
     // Inicializamos los conjuntos fd_set para la función select()
@@ -45,6 +52,10 @@ int main(int argc, char **argv) {
     FD_ZERO(&readFDS); // Vacía el set
     FD_SET(0, &readFDS); // Añade stdin al set de descriptores de lectura
     FD_SET(socketDescriptor, &readFDS); // Añade el socket al set de descriptores de lectura
+
+
+    // Capturamos la señal SIGINT (Ctrl+c)
+    signal(SIGINT, signalHandler);
 
 
     // Intercambio de mensajes con el servidor
@@ -57,7 +68,8 @@ int main(int argc, char **argv) {
         // de los sockets del set
         if ((select(socketDescriptor + 1, &auxFDS, nullptr, nullptr, nullptr)) < 0) {
             cerr << "Error en select(): " << strerror(errno) << endl;
-            end = true;
+            socket.close();
+            exit(EXIT_FAILURE);
         }
 
         if (FD_ISSET(socketDescriptor, &auxFDS)) {
@@ -73,8 +85,8 @@ int main(int argc, char **argv) {
 
             cout << receivedMessage << endl;
 
-            // TODO: Desconectar cliente si el servidor nos rechaza o algo
-            if (strcmp(receivedMessage, "") == 0)
+            if (strcmp(receivedMessage, "-ERR. Se ha superado el número de "
+                                        "usuarios conectados") == 0)
                 end = true;
 
         } else if (FD_ISSET(0, &auxFDS)) {
@@ -100,4 +112,13 @@ int main(int argc, char **argv) {
 
 
     return EXIT_SUCCESS;
+}
+
+
+void signalHandler(int) {
+    cout << ">>> Se fuerza la salida" << endl;
+
+    close(socketDescriptor);
+
+    exit(EXIT_SUCCESS);
 }
