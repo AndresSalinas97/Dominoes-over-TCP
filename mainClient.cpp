@@ -77,17 +77,21 @@ int main(int argc, char **argv) {
 
             bzero(receivedMessage, sizeof(receivedMessage));
 
-            if ((recv(socketDescriptor, receivedMessage, sizeof(receivedMessage), 0)) < 0) {
+            int nReceived = recv(socketDescriptor, receivedMessage, sizeof(receivedMessage), 0);
+            if (nReceived < 0) {
                 cerr << "Error al recibir mensaje del servidor: " << strerror(errno) << endl;
                 socket.close();
                 exit(EXIT_FAILURE);
-            }
-
-            cout << receivedMessage << endl;
-
-            if (strcmp(receivedMessage, "-ERR. Se ha superado el número de "
-                                        "usuarios conectados") == 0)
+            } else if (nReceived == 0) {
+                cout << "\t* El servidor ha terminado la conexión *" << endl;
                 end = true;
+            } else {
+                cout << receivedMessage  << endl;
+
+                if (strcmp(receivedMessage, "-ERR. Se ha superado el número de "
+                                            "usuarios conectados") == 0)
+                    end = true;
+            }
 
         } else if (FD_ISSET(0, &auxFDS)) {
             // El usuario ha tecleado un mensaje
@@ -106,14 +110,14 @@ int main(int argc, char **argv) {
         fflush(stdout);
         fflush(stderr);
     } while (!end);
-    
-    
+
+
     return EXIT_SUCCESS;
 }
 
 
 void signalHandler(int) {
-    cout << endl << "* Se fuerza la salida *" << endl;
+    cout << endl << "\t* Se fuerza la salida *" << endl;
 
     close(socketDescriptor);
 
