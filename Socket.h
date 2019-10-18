@@ -11,6 +11,9 @@
 #define DOMINOES_OVER_TCP_SOCKET_H
 
 
+/**
+ * Clase Socket: Abre, habilita y cierra sockets para el cliente y el servidor.
+ */
 class Socket {
 public:
     /**
