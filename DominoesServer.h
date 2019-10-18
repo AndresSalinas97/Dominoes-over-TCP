@@ -18,7 +18,7 @@
 
 class DominoesServer {
 public:
-    inline explicit DominoesServer(const Socket &serverSocket);
+    explicit DominoesServer(const Socket &serverSocket);
 
     void start();
 
