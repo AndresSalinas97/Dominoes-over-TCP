@@ -33,11 +33,9 @@ void DominoesServer::start() {
     char receivedMessage[MSG_SIZE];
     int nReceived;
 
-
     // Mensajes de inicio:
     printHelp();
     cout << "\t* Servidor iniciado *" << endl;
-
 
     // Inicializamos los conjuntos fd_set para la función select()
     fd_set auxFDS; // Set de descriptores auxiliar para la funcion select()
@@ -46,7 +44,6 @@ void DominoesServer::start() {
     FD_SET((unsigned) 0, &readFDS); // Añade stdin al set de descriptores de lectura
     FD_SET(serverSocket.getDescriptor(), &readFDS); // Añade el socket del
     // servidor al set de descriptores de lectura
-
 
     // Intercambio de mensajes
     while (true) {
@@ -93,7 +90,6 @@ void DominoesServer::start() {
         fflush(stdout);
         fflush(stderr);
     }
-
 
     // El servidor termina cerrando el socket
     serverSocket.close();
@@ -314,19 +310,18 @@ void DominoesServer::sendHelp(int clientSocketD) {
     // Obtenemos el cliente para mostrar ayuda contextual
     User user = * usersManager.getUser(clientSocketD);
 
-    sendMessage(clientSocketD, "*INFO. Comandos disponibles:\n");
+    sendMessage(clientSocketD, "*INFO. Comandos disponibles para su estado actual:\n");
 
     if (!user.isPasswordLogged()) {
         sendMessage(clientSocketD, "\tUSUARIO nombreDeUsuario\n");
         sendMessage(clientSocketD, "\tPASSWORD contraseña\n");
         sendMessage(clientSocketD, "\tREGISTRO -u nombreDeUsuario -p contraseña\n");
+    } else {
+        sendMessage(clientSocketD, "\tINICIAR-PARTIDA\n");
     }
 
-    if (user.isWaiting())
-        sendMessage(clientSocketD, "\tINICIAR-PARTIDA\n");
-
     if (user.isPlaying()) {
-        sendMessage(clientSocketD, "\tCOLOCAR-FICHA\n");
+        sendMessage(clientSocketD, "\tCOLOCAR-FICHA |valor1|valor2|,extremo\n");
         sendMessage(clientSocketD, "\tPASO-TURNO\n");
         sendMessage(clientSocketD, "\tROBAR-FICHA\n");
     }
