@@ -94,7 +94,7 @@ void DominoesServer::start() {
 }
 
 void DominoesServer::end() {
-    cout << endl << "* El servidor se cerrará después de avisar a los clientes *" << endl;
+    cout << endl << "\t* El servidor se cerrará después de avisar a los clientes *" << endl;
 
     // TODO: Avisar a los clientes
 
@@ -126,7 +126,7 @@ void DominoesServer::handleUserInput() {
         // TODO: Imprimir estadísticas (usuarios conectados, usuarios registrados, partidas en curso...)
         cerr << "Sin implementar" << endl;
     else
-        cout << "* Comando no reconocido *" << endl;
+        cout << "\t* Comando no reconocido *" << endl;
 }
 
 void DominoesServer::handleNewClient() {
@@ -149,7 +149,7 @@ void DominoesServer::handleNewClient() {
 
             FD_SET(newClientSocketD, &readFDS);
 
-            cout << "* Nuevo cliente en socket " << newClientSocketD << " *" << endl;
+            cout << "\t* Nuevo cliente en socket " << newClientSocketD << " *" << endl;
 
             sendMessage(newClientSocketD, "+0k. Usuario conectado");
         }
@@ -158,7 +158,7 @@ void DominoesServer::handleNewClient() {
 
 void DominoesServer::handleGoneClient(int goneClientSocketD) {
     // TODO
-    cout << "* Cliente desconectado en socket " << goneClientSocketD << " *" << endl;
+    cout << "\t* Cliente desconectado en socket " << goneClientSocketD << " *" << endl;
 
     close(goneClientSocketD);
 
