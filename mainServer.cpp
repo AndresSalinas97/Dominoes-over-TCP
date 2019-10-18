@@ -10,20 +10,33 @@
 #include "DominoesServer.h"
 #include "Socket.h"
 
-#include <cstdlib>
+#include <csignal>
 
 
-// TODO: Capturar señales (ctrl+c)
+DominoesServer *dominoesServerPointer; // Para poderlo usar en signalHandler()
+
+
+void signalHandler(int);
+
+
 int main() {
     // Abrimos el socket y lo habilitamos para que pueda recibir conexiones
     Socket socket;
     socket.prepareServerSocket();
 
-    // Iniciamos el servidor
+    // Creamos el objeto dominoesServer e inicializamos dominoesServerPointer
+    // para que se pueda usar en signalHandler()
     DominoesServer dominoesServer(socket);
+    dominoesServerPointer = &dominoesServer;
+
+    // Capturamos la señal SIGINT (Ctrl+c)
+    signal(SIGINT, signalHandler);
+
+    // Iniciamos el servidor
     dominoesServer.start();
+}
 
-    socket.close();
 
-    return EXIT_SUCCESS;
+void signalHandler(int) {
+    dominoesServerPointer->end();
 }

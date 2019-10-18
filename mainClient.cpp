@@ -25,7 +25,7 @@ using std::cin;
 using std::endl;
 
 
-int socketDescriptor;
+int socketDescriptor; // Para poderlo usar en signalHandler()
 
 
 void signalHandler(int);
@@ -46,16 +46,16 @@ int main(int argc, char **argv) {
     socketDescriptor = socket.getDescriptor();
 
 
+    // Capturamos la señal SIGINT (Ctrl+c)
+    signal(SIGINT, signalHandler);
+
+
     // Inicializamos los conjuntos fd_set para la función select()
     fd_set readFDS, auxFDS; // Sets de descriptores para la funcion select()
     FD_ZERO(&auxFDS); // Vacía el el set
     FD_ZERO(&readFDS); // Vacía el set
     FD_SET(0, &readFDS); // Añade stdin al set de descriptores de lectura
     FD_SET(socketDescriptor, &readFDS); // Añade el socket al set de descriptores de lectura
-
-
-    // Capturamos la señal SIGINT (Ctrl+c)
-    signal(SIGINT, signalHandler);
 
 
     // Intercambio de mensajes con el servidor
@@ -102,21 +102,18 @@ int main(int argc, char **argv) {
                 socket.close();
                 exit(EXIT_FAILURE);
             }
-
-            if (strcmp(sentMessage, "SALIR") == 0)
-                end = true;
         }
         fflush(stdout);
         fflush(stderr);
     } while (!end);
-
-
+    
+    
     return EXIT_SUCCESS;
 }
 
 
 void signalHandler(int) {
-    cout << ">>> Se fuerza la salida" << endl;
+    cout << endl << "* Se fuerza la salida *" << endl;
 
     close(socketDescriptor);
 

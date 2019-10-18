@@ -1,9 +1,9 @@
 /**
- * @file    ?.h
+ * @file    DominoesServer.h
  * @author  Andrés Salinas Lima
  * @date    17/10/2019
- * @brief   Declaración de la clase ?:
- * // TODO: Add comments here
+ * @brief   Declaración de la clase DominoesServer: Clase para gestionar el
+ *          servidor del juego del Dominó.
  */
 
 
@@ -18,18 +18,18 @@
 
 class DominoesServer {
 public:
-    inline explicit DominoesServer(const Socket &serverSocket) {
-        this->serverSocket = serverSocket;
-    }
+    inline explicit DominoesServer(const Socket &serverSocket);
 
     void start();
+
+    void end();
 
 
 private:
     Socket serverSocket; // Objeto Socket del servidor
-    fd_set readFDS;      // Set de descriptores para la funcion select()
+    fd_set readFDS{};    // Set de descriptores para la funcion select()
 
-    void sendMessage(int destinationSocketD, const char *message);
+    static void sendMessage(int destinationSocketD, const char *message);
 
     void handleUserInput();
 

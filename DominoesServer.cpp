@@ -1,18 +1,16 @@
 /**
- * @file    ?.cpp
+ * @file    DominoesServer.cpp
  * @author  Andrés Salinas Lima
  * @date    17/10/2019
- * @brief   Código de la clase ?:
- * // TODO: Add comments here
+ * @brief   Código de la clase DominoesServer: Clase para gestionar el
+ *          servidor del juego del Dominó.
  */
 
 
 #include "DominoesServer.h"
-#include "Socket.h"
 #include "constants.h"
 
 #include <iostream>
-#include <cstdlib>
 #include <cstring>
 #include <unistd.h>
 #include <sys/types.h>
@@ -24,12 +22,16 @@ using std::cout;
 using std::cin;
 using std::cerr;
 using std::endl;
+using std::string;
 
+
+DominoesServer::DominoesServer(const Socket &serverSocket) {
+    this->serverSocket = serverSocket;
+}
 
 void DominoesServer::start() {
     fd_set auxFDS; // Set de descriptores auxiliar para la funcion select()
     char receivedMessage[MSG_SIZE];
-    bool end = false;
     int nReceived;
 
 
@@ -42,14 +44,14 @@ void DominoesServer::start() {
 
 
     // Intercambio de mensajes
-    do {
+    while (true) {
         auxFDS = readFDS; // Inicializamos auxFDS antes de llamar a select()
 
         // select() duerme el proceso hasta que haya datos disponibles en alguno
         // de los sockets del set
         if ((select(FD_SETSIZE, &auxFDS, nullptr, nullptr, nullptr)) < 0) {
             cerr << "Error en select(): " << strerror(errno) << endl;
-            end = true;
+            break;
         }
 
         for (int activeSocketD = 0; activeSocketD < FD_SETSIZE; activeSocketD++) {
@@ -84,14 +86,31 @@ void DominoesServer::start() {
         }
         fflush(stdout);
         fflush(stderr);
-    } while (!end);
+    }
+
+
+    // El servidor termina cerrando el socket
+    serverSocket.close();
+}
+
+void DominoesServer::end() {
+    cout << endl << "* El servidor se cerrará después de avisar a los clientes *" << endl;
+
+    // TODO: Avisar a los clientes
+
+    // TODO: Es shutdown necesario?
+    /*if ((shutdown(serverSocket.getDescriptor(), SHUT_RDWR)) < 0)
+        cerr << "Error en shutdown(): " << strerror(errno) << endl;*/
+
+    serverSocket.close();
+
+    exit(EXIT_SUCCESS);
 }
 
 void DominoesServer::sendMessage(int destinationSocketD, const char *message) {
+    // Para asegurar que no se sobrepasa MSG_SIZE
     char sentMessage[MSG_SIZE];
-
     bzero(sentMessage, sizeof(sentMessage));
-
     strcpy(sentMessage, message);
 
     if ((send(destinationSocketD, sentMessage, strlen(sentMessage), 0)) < 0)
@@ -100,7 +119,18 @@ void DominoesServer::sendMessage(int destinationSocketD, const char *message) {
 }
 
 void DominoesServer::handleUserInput() {
-    // TODO
+    string input;
+
+    cin >> input;
+    cin.ignore();
+
+    if (input == "SALIR")
+        end();
+    else if (input == "STATS")
+        // TODO: Imprimir estadísticas (usuarios conectados, usuarios registrados, partidas en curso...)
+        cerr << "Sin implementar" << endl;
+    else
+        cout << "* Comando no reconocido *" << endl;
 }
 
 void DominoesServer::handleNewClient() {
@@ -114,19 +144,25 @@ void DominoesServer::handleNewClient() {
                                    &clientAddressLength)) < 0) {
         cerr << "Error en accept(): " << strerror(errno) << endl;
     } else {
-        // TODO: Comprobar que no superemos el limite de clientes
-        // Tenemos un nuevo cliente
+        // TODO: Comprobamos que no se supere el limite de clientes
+        if (false) {
+            sendMessage(newClientSocketD, "-ERR. Se ha superado el número de usuarios conectados");
+        } else {
+            // Tenemos un nuevo cliente
+            // TODO
 
-        FD_SET(newClientSocketD, &readFDS);
+            FD_SET(newClientSocketD, &readFDS);
 
-        cout << "Tenemos un nuevo cliente: " << newClientSocketD << endl;
+            cout << "* Nuevo cliente en socket " << newClientSocketD << " *" << endl;
 
-        sendMessage(newClientSocketD, "Bienvenido");
+            sendMessage(newClientSocketD, "+0k. Usuario conectado");
+        }
     }
 }
 
 void DominoesServer::handleGoneClient(int goneClientSocketD) {
-    cout << "El cliente " << goneClientSocketD << " nos ha abbandonado" << endl;
+    // TODO
+    cout << "* Cliente desconectado en socket " << goneClientSocketD << " *" << endl;
 
     close(goneClientSocketD);
 
@@ -135,5 +171,6 @@ void DominoesServer::handleGoneClient(int goneClientSocketD) {
 
 void DominoesServer::handleClientCommunication(int clientSocketD,
                                                const char *receivedMessage) {
-    cout << "Cliente " << clientSocketD << ": " << receivedMessage << endl;
+    // TODO
+    cout << "Socket " << clientSocketD << ": " << receivedMessage << endl; // TODO: eliminar
 }

@@ -26,14 +26,14 @@ using std::endl;
 Socket::Socket() {
     socketDescriptor = socket(AF_INET, SOCK_STREAM, 0);
     if (socketDescriptor < 0) {
-        cerr << "No se puede abrir el serverSocket: " << strerror(errno) << endl;
+        cerr << "No se puede abrir el socket: " << strerror(errno) << endl;
         exit(EXIT_FAILURE);
     }
 }
 
 void Socket::close() {
     if ((::close(socketDescriptor)) < 0) {
-        cerr << "No se puede cerrar el serverSocket: " << strerror(errno) << endl;
+        cerr << "No se puede cerrar el socket: " << strerror(errno) << endl;
         exit(EXIT_FAILURE);
     }
 }
