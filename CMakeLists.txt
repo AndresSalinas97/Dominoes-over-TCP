@@ -3,5 +3,5 @@ project(Dominoes_over_TCP)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Dominoes_over_TCP_Server mainServer.cpp constants.h Socket.cpp Socket.h DominoesServer.cpp DominoesServer.h Client.cpp Client.h)
+add_executable(Dominoes_over_TCP_Server mainServer.cpp constants.h Socket.cpp Socket.h DominoesServer.cpp DominoesServer.h Client.h)
 add_executable(Dominoes_over_TCP_Client mainClient.cpp constants.h Socket.cpp Socket.h)

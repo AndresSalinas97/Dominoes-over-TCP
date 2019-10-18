@@ -15,9 +15,20 @@
 using std::string;
 
 
+/**
+ * TODO: Documentar clase
+ */
 class Client {
+// TODO: Documentar miembros clase
 public:
-    explicit Client(int socketDescriptor);
+    inline explicit Client(int socketDescriptor) :
+            username(""),
+            usernameLogged(false),
+            passwordLogged(false),
+            waiting(false),
+            playing(false) {
+        this->socketDescriptor = socketDescriptor;
+    }
 
     inline int getSocketDescriptor() const {
         return socketDescriptor;
@@ -39,6 +50,10 @@ public:
         return waiting;
     }
 
+    inline bool isPlaying() const {
+        return playing;
+    }
+
 
 private:
     int socketDescriptor;
@@ -46,6 +61,7 @@ private:
     bool usernameLogged;
     bool passwordLogged;
     bool waiting;
+    bool playing;
     //TODO: Pointer to domino board
 };
 
