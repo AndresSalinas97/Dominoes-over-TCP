@@ -98,6 +98,7 @@ int main(int argc, char **argv) {
             bzero(sentMessage, sizeof(sentMessage));
 
             cin.get(sentMessage, MSG_SIZE);
+            cin.clear();
             cin.ignore();
 
             if ((send(socketDescriptor, sentMessage, sizeof(sentMessage), 0)) < 0) {
