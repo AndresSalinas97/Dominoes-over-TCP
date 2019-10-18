@@ -98,10 +98,6 @@ void DominoesServer::end() {
 
     // TODO: Avisar a los clientes
 
-    // TODO: Es shutdown necesario?
-    /*if ((shutdown(serverSocket.getDescriptor(), SHUT_RDWR)) < 0)
-        cerr << "Error en shutdown(): " << strerror(errno) << endl;*/
-
     serverSocket.close();
 
     exit(EXIT_SUCCESS);
