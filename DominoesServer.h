@@ -12,7 +12,7 @@
 
 
 #include "Socket.h"
-#include "Client.h"
+#include "User.h"
 
 #include <sys/socket.h>
 #include <string>
@@ -39,7 +39,7 @@ public:
 private:
     Socket serverSocket;  // Objeto Socket del servidor
     fd_set readFDS{};     // Set de descriptores para la funcion select()
-    list<Client> clients; // Lista de clientes conectados
+    list<User> clients; // Lista de clientes conectados
 
     static void sendMessage(int destinationSocketD, const char *message);
 
@@ -78,7 +78,7 @@ private:
 
     void handleSalirCommand(int clientSocketD);
 
-    Client & findClient(int clientSocketD);
+    User & findClient(int clientSocketD);
 };
 
 

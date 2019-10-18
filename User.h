@@ -1,12 +1,12 @@
 /**
- * @file    Client.h
+ * @file    User.h
  * @author  Andrés Salinas Lima
  * @date    18/10/2019
- * @brief   Declaración de la clase Client: TODO
+ * @brief   Declaración de la clase User: TODO
  */
 
-#ifndef DOMINOES_OVER_TCP_CLIENT_H
-#define DOMINOES_OVER_TCP_CLIENT_H
+#ifndef DOMINOES_OVER_TCP_USER_H
+#define DOMINOES_OVER_TCP_USER_H
 
 
 #include <string>
@@ -18,10 +18,10 @@ using std::string;
 /**
  * TODO: Documentar clase
  */
-class Client {
+class User {
 // TODO: Documentar miembros clase
 public:
-    inline explicit Client(int socketDescriptor) :
+    inline explicit User(int socketDescriptor) :
             username(""),
             usernameLogged(false),
             passwordLogged(false),
@@ -66,4 +66,4 @@ private:
 };
 
 
-#endif //DOMINOES_OVER_TCP_CLIENT_H
+#endif //DOMINOES_OVER_TCP_USER_H

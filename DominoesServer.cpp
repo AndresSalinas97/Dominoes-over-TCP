@@ -160,7 +160,7 @@ void DominoesServer::handleNewClient() {
             // Tenemos un nuevo cliente
 
             // Añadimos el nuevo cliente a la lista de clientes
-            Client newClient(newClientSocketD);
+            User newClient(newClientSocketD);
             clients.push_back(newClient);
 
             FD_SET(newClientSocketD, &readFDS);
@@ -321,7 +321,7 @@ void DominoesServer::handleRobarFichaCommand(int clientSocketD) {
 
 void DominoesServer::sendHelp(int clientSocketD) {
     // Obtenemos el cliente para mostrar ayuda contextual
-    Client client = findClient(clientSocketD);
+    User client = findClient(clientSocketD);
 
     sendMessage(clientSocketD, "*INFO. Comandos disponibles:\n");
 
@@ -352,7 +352,7 @@ void DominoesServer::handleSalirCommand(int clientSocketD) {
     removeClient(clientSocketD);
 }
 
-Client & DominoesServer::findClient(int clientSocketD) {
+User & DominoesServer::findClient(int clientSocketD) {
     for (auto & client : clients)
         if (client.getSocketDescriptor() == clientSocketD)
             return client;
