@@ -11,6 +11,7 @@
 #include "Socket.h"
 
 #include <csignal>
+#include <iostream>
 
 
 DominoesServer *dominoesServerPointer; // Para poderlo usar en signalHandler()
@@ -38,5 +39,6 @@ int main() {
 
 
 void signalHandler(int) {
+    std::cout << std::endl;
     dominoesServerPointer->end();
 }
