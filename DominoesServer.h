@@ -14,6 +14,10 @@
 #include "Socket.h"
 
 #include <sys/socket.h>
+#include <string>
+
+
+using std::string;
 
 
 class DominoesServer {
@@ -37,7 +41,9 @@ private:
 
     void handleGoneClient(int goneClientSocketD);
 
-    void handleClientCommunication(int clientSocketD, const char *receivedMessage);
+    void handleClientCommunication(int clientSocketD, string receivedMessage);
+
+    void printStats();
 };
 
 
