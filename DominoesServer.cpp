@@ -12,6 +12,9 @@
 
 #include <iostream>
 #include <cstring>
+#include <vector>
+#include <iterator>
+#include <sstream>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -23,15 +26,22 @@ using std::cin;
 using std::cerr;
 using std::endl;
 using std::string;
+using std::list;
+using std::vector;
 
 
 void DominoesServer::start() {
-    fd_set auxFDS; // Set de descriptores auxiliar para la funcion select()
     char receivedMessage[MSG_SIZE];
     int nReceived;
 
 
+    // Mensajes de inicio:
+    printHelp();
+    cout << "\t* Servidor iniciado *" << endl;
+
+
     // Inicializamos los conjuntos fd_set para la función select()
+    fd_set auxFDS; // Set de descriptores auxiliar para la funcion select()
     FD_ZERO(&auxFDS); // Vacía el el set
     FD_ZERO(&readFDS); // Vacía el set
     FD_SET((unsigned) 0, &readFDS); // Añade stdin al set de descriptores de lectura
@@ -119,14 +129,17 @@ void DominoesServer::handleUserInput() {
     string input;
 
     cin >> input;
+    cin.clear();
     cin.ignore();
 
     if (input == "SALIR")
         end();
     else if (input == "STATS")
         printStats();
+    else if (input == "AYUDA")
+        printHelp();
     else
-        cout << "\t* Comando no reconocido *" << endl;
+        cout << "\t* Comando no válido *" << endl;
 }
 
 void DominoesServer::handleNewClient() {
@@ -154,7 +167,9 @@ void DominoesServer::handleNewClient() {
 
             cout << "\t* Nuevo cliente en socket " << newClientSocketD << " *" << endl;
 
-            sendMessage(newClientSocketD, "+0k. Usuario conectado");
+            sendHelp(newClientSocketD);
+
+            sendMessage(newClientSocketD, "+OK. Usuario conectado");
         }
     }
 }
@@ -162,6 +177,10 @@ void DominoesServer::handleNewClient() {
 void DominoesServer::handleGoneClient(int goneClientSocketD) {
     cout << "\t* Cliente desconectado en socket " << goneClientSocketD << " *" << endl;
 
+    removeClient(goneClientSocketD);
+}
+
+void DominoesServer::removeClient(int goneClientSocketD) {
     // TODO: Si el cliente estaba jugando, notificar a su oponente, poner a su oponente en not playing y eliminar la partida
 
     // Se elimina de la lista de clientes
@@ -180,13 +199,135 @@ void DominoesServer::handleGoneClient(int goneClientSocketD) {
 
 void DominoesServer::handleClientCommunication(int clientSocketD,
                                                const string &receivedMessage) {
-    // TODO
-    cout << "Socket " << clientSocketD << ": " << receivedMessage << endl; // TODO: eliminar
+    cout << "Socket " << clientSocketD << ": \"" << receivedMessage << "\"" << endl; // TODO: eliminar
+
+    // Separamos receivedMessage en palabras
+    std::istringstream iss(receivedMessage);
+    vector<string> tokens{std::istream_iterator<string>{iss}, std::istream_iterator<string>{}};
+
+    if (tokens.empty()) {
+        sendMessage(clientSocketD, "-ERR. Mensaje no válido");
+        return;
+    }
+
+    if (tokens[0] == "USUARIO") {
+        if (tokens.size() != 2)
+            sendMessage(clientSocketD, "-ERR. Formato no válido");
+        else
+            handleUsuarioCommand(clientSocketD, tokens[1]);
+
+    } else if (tokens[0] == "PASSWORD") {
+        if (tokens.size() != 2)
+            sendMessage(clientSocketD, "-ERR. Formato no válido");
+        else
+            handlePasswordCommand(clientSocketD, tokens[1]);
+
+    } else if (tokens[0] == "REGISTRO") {
+        if (tokens.size() != 5 || tokens[1] != "-d" || tokens[3] != "-p")
+            sendMessage(clientSocketD, "-ERR. Formato no válido");
+        else
+            handleRegistroCommand(clientSocketD, tokens[2], tokens[4]);
+
+    } else if (tokens[0] == "INICIAR-PARTIDA") {
+        if (tokens.size() != 1)
+            sendMessage(clientSocketD, "-ERR. Formato no válido");
+        else
+            handleIniciarPartidaCommand(clientSocketD);
+
+    } else if (tokens[0] == "COLOCAR-FICHA") {
+        if (tokens.size() != 2)
+            sendMessage(clientSocketD, "-ERR. Formato no válido");
+        else
+            handleColocarFichaCommand(clientSocketD, tokens[1]);
+
+    } else if (tokens[0] == "PASO-TURNO") {
+        if (tokens.size() != 1)
+            sendMessage(clientSocketD, "-ERR. Formato no válido");
+        else
+            handlePasoTurnoCommand(clientSocketD);
+
+    } else if (tokens[0] == "ROBAR-FICHA") {
+        if (tokens.size() != 1)
+            sendMessage(clientSocketD, "-ERR. Formato no válido");
+        else
+            handleRobarFichaCommand(clientSocketD);
+
+    } else if (tokens[0] == "AYUDA") {
+        if (tokens.size() != 1)
+            sendMessage(clientSocketD, "-ERR. Formato no válido");
+        else
+            sendHelp(clientSocketD);
+
+    } else if (tokens[0] == "SALIR") {
+        if (tokens.size() != 1)
+            sendMessage(clientSocketD, "-ERR. Formato no válido");
+        else
+            handleSalirCommand(clientSocketD);
+
+    } else {
+        sendMessage(clientSocketD, "-ERR. Comando no válido");
+    }
 }
 
 void DominoesServer::printStats() {
-    cout << "\t* STATS *" << endl;
+    cout << "\t* ESTADÍSTICAS *" << endl;
 
     cout << "\t\tClientes conectados: " << clients.size() << endl;
-    // TODO: Imprimir número de partidas en curso
+    cout << "\t\tPartidas en curso: " << "?" << endl; // TODO
+    cout << "\t\tClientes registrados: " << "?" << endl; // TODO
+}
+
+void DominoesServer::printHelp() {
+    cout << "\t* COMANDOS DISPONIBLES *" << endl;
+    cout << "\t\t- STATS: Mostrar estadísticas" << endl;
+    cout << "\t\t- SALIR: Salir" << endl;
+    cout << "\t\t- AYUDA: Mostrar esta ayuda" << endl;
+}
+
+void DominoesServer::handleUsuarioCommand(int clientSocketD, const string &username) {
+    // TODO
+    sendMessage(clientSocketD, "*INFO. SIN IMPLEMENTAR");
+}
+
+void DominoesServer::handlePasswordCommand(int clientSocketD, const string &password) {
+    // TODO
+    sendMessage(clientSocketD, "*INFO. SIN IMPLEMENTAR");
+}
+
+void DominoesServer::handleRegistroCommand(int clientSocketD, const string &username, const string &password) {
+    // TODO
+    sendMessage(clientSocketD, "*INFO. SIN IMPLEMENTAR");
+}
+
+void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
+    // TODO
+    sendMessage(clientSocketD, "*INFO. SIN IMPLEMENTAR");
+}
+
+void DominoesServer::handleColocarFichaCommand(int clientSocketD, const string &dominoAndSide) {
+    // TODO
+    sendMessage(clientSocketD, "*INFO. SIN IMPLEMENTAR");
+}
+
+void DominoesServer::handlePasoTurnoCommand(int clientSocketD) {
+    // TODO
+    sendMessage(clientSocketD, "*INFO. SIN IMPLEMENTAR");
+}
+
+void DominoesServer::handleRobarFichaCommand(int clientSocketD) {
+    // TODO
+    sendMessage(clientSocketD, "*INFO. SIN IMPLEMENTAR");
+}
+
+void DominoesServer::sendHelp(int clientSocketD) {
+    // TODO
+    sendMessage(clientSocketD, "*INFO. SIN IMPLEMENTAR");
+}
+
+void DominoesServer::handleSalirCommand(int clientSocketD) {
+    sendMessage(clientSocketD, "+OK. Desconexión procesada");
+
+    cout << "\t* Cliente abandona en socket " << clientSocketD << " *" << endl;
+
+    removeClient(clientSocketD);
 }

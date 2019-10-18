@@ -23,7 +23,11 @@ using std::string;
 using std::list;
 
 
+/**
+ * Clase para gestionar el servidor del juego del Dominó.
+ */
 class DominoesServer {
+// TODO: Documentar miembros clase
 public:
     inline explicit DominoesServer(const Socket &serverSocket) : serverSocket(serverSocket) {};
 
@@ -43,11 +47,36 @@ private:
 
     void handleNewClient();
 
+    /**
+     * Acciones a realizar cuando un cliente se desconecta.
+     */
     void handleGoneClient(int goneClientSocketD);
+
+    void removeClient(int goneClientSocketD);
 
     void handleClientCommunication(int clientSocketD, const string &receivedMessage);
 
     void printStats();
+
+    static void printHelp();
+
+    void handleUsuarioCommand(int clientSocketD, const string &username);
+
+    void handlePasswordCommand(int clientSocketD, const string &password);
+
+    void handleRegistroCommand(int clientSocketD, const string &username, const string &password);
+
+    void handleIniciarPartidaCommand(int clientSocketD);
+
+    void handleColocarFichaCommand(int clientSocketD, const string &dominoAndSide);
+
+    void handlePasoTurnoCommand(int clientSocketD);
+
+    void handleRobarFichaCommand(int clientSocketD);
+
+    void sendHelp(int clientSocketD);
+
+    void handleSalirCommand(int clientSocketD);
 };
 
 
