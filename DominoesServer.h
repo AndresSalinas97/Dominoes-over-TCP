@@ -13,6 +13,7 @@
 
 #include "Socket.h"
 #include "User.h"
+#include "UsersManager.h"
 
 #include <sys/socket.h>
 #include <string>
@@ -20,7 +21,6 @@
 
 
 using std::string;
-using std::list;
 
 
 /**
@@ -37,9 +37,9 @@ public:
 
 
 private:
-    Socket serverSocket;  // Objeto Socket del servidor
-    fd_set readFDS{};     // Set de descriptores para la funcion select()
-    list<User> clients; // Lista de clientes conectados
+    Socket serverSocket;       // Objeto Socket del servidor
+    fd_set readFDS{};          // Set de descriptores para la funcion select()
+    UsersManager usersManager; // Mánager de usuarios
 
     static void sendMessage(int destinationSocketD, const char *message);
 
@@ -77,8 +77,6 @@ private:
     void sendHelp(int clientSocketD);
 
     void handleSalirCommand(int clientSocketD);
-
-    User & findClient(int clientSocketD);
 };
 
 

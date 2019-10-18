@@ -62,7 +62,7 @@ private:
     bool passwordLogged;
     bool waiting;
     bool playing;
-    //TODO: Pointer to domino board
+    // TODO: Pointer to Dominoes game
 };
 
 

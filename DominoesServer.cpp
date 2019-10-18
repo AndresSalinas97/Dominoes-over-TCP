@@ -26,7 +26,6 @@ using std::cin;
 using std::cerr;
 using std::endl;
 using std::string;
-using std::list;
 using std::vector;
 
 
@@ -103,11 +102,8 @@ void DominoesServer::start() {
 void DominoesServer::end() {
     cout << "\t* El servidor se cerrará después de avisar a los clientes *" << endl;
 
-    for (auto & client : clients)
-        sendMessage(client.getSocketDescriptor(), "*INFO. El servidor va a cerrar");
-
-    clients.empty();
-    // TODO: Vaciar lista partidas
+    for (auto &user : usersManager.getUsers())
+        sendMessage(user.getSocketDescriptor(), "*INFO. El servidor va a cerrar");
 
     serverSocket.close();
 
@@ -153,15 +149,14 @@ void DominoesServer::handleNewClient() {
                                    &clientAddressLength)) < 0) {
         cerr << "Error en accept(): " << strerror(errno) << endl;
     } else {
-        if (clients.size() >= MAX_CLIENTS) {
+        if (usersManager.getNUsers() >= MAX_CLIENTS) {
             sendMessage(newClientSocketD, "-ERR. Se ha superado el número de "
                                           "usuarios conectados");
         } else {
             // Tenemos un nuevo cliente
 
             // Añadimos el nuevo cliente a la lista de clientes
-            User newClient(newClientSocketD);
-            clients.push_back(newClient);
+            usersManager.addUser(newClientSocketD);
 
             FD_SET(newClientSocketD, &readFDS);
 
@@ -184,11 +179,7 @@ void DominoesServer::removeClient(int goneClientSocketD) {
     // TODO: Si el cliente estaba jugando, notificar a su oponente, poner a su oponente en not playing y eliminar la partida
 
     // Se elimina de la lista de clientes
-    for (auto client = clients.begin(); client != clients.end(); client++)
-        if (client->getSocketDescriptor() == goneClientSocketD) {
-            clients.erase(client);
-            break;
-        }
+    usersManager.removeUser(goneClientSocketD);
 
     // Se cierra su socket
     close(goneClientSocketD);
@@ -272,7 +263,7 @@ void DominoesServer::handleClientCommunication(int clientSocketD,
 void DominoesServer::printStats() {
     cout << "\t* ESTADÍSTICAS *" << endl;
 
-    cout << "\t\tClientes conectados: " << clients.size() << endl;
+    cout << "\t\tClientes conectados: " << usersManager.getNUsers() << endl;
     cout << "\t\tPartidas en curso: " << "?" << endl; // TODO
     cout << "\t\tClientes registrados: " << "?" << endl; // TODO
 }
@@ -321,20 +312,20 @@ void DominoesServer::handleRobarFichaCommand(int clientSocketD) {
 
 void DominoesServer::sendHelp(int clientSocketD) {
     // Obtenemos el cliente para mostrar ayuda contextual
-    User client = findClient(clientSocketD);
+    User user = * usersManager.getUser(clientSocketD);
 
     sendMessage(clientSocketD, "*INFO. Comandos disponibles:\n");
 
-    if(!client.isPasswordLogged()) {
+    if (!user.isPasswordLogged()) {
         sendMessage(clientSocketD, "\tUSUARIO nombreDeUsuario\n");
         sendMessage(clientSocketD, "\tPASSWORD contraseña\n");
         sendMessage(clientSocketD, "\tREGISTRO -u nombreDeUsuario -p contraseña\n");
     }
 
-    if(client.isWaiting())
+    if (user.isWaiting())
         sendMessage(clientSocketD, "\tINICIAR-PARTIDA\n");
 
-    if(client.isPlaying()) {
+    if (user.isPlaying()) {
         sendMessage(clientSocketD, "\tCOLOCAR-FICHA\n");
         sendMessage(clientSocketD, "\tPASO-TURNO\n");
         sendMessage(clientSocketD, "\tROBAR-FICHA\n");
@@ -350,10 +341,4 @@ void DominoesServer::handleSalirCommand(int clientSocketD) {
     cout << "\t* Cliente abandona en socket " << clientSocketD << " *" << endl;
 
     removeClient(clientSocketD);
-}
-
-User & DominoesServer::findClient(int clientSocketD) {
-    for (auto & client : clients)
-        if (client.getSocketDescriptor() == clientSocketD)
-            return client;
 }
