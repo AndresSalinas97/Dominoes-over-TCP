@@ -1,8 +1,8 @@
 /**
  * @file    Client.h
  * @author  Andrés Salinas Lima
- * @date    11/10/2019
- * @brief   Clase cliente: TODO
+ * @date    18/10/2019
+ * @brief   Declaración de la clase Client: TODO
  */
 
 #ifndef DOMINOES_OVER_TCP_CLIENT_H
@@ -17,40 +17,36 @@ using std::string;
 
 class Client {
 public:
+    explicit Client(int socketDescriptor);
 
-
-private:
-    int socket;
-    bool logged;
-    string username;
-    bool playing;
-    //TODO: Pointer to domino board
-
-
-public:
-    inline Client(int socket) : logged(false), username("") {
-        this->socket = socket;
+    inline int getSocketDescriptor() const {
+        return socketDescriptor;
     }
 
-    int getSocket() const {
-        return socket;
-    }
-
-    bool isLogged() const {
-        return logged;
-    }
-
-    void setSocket(int socket) {
-        Client::socket = socket;
-    }
-
-    const string &getUsername() const {
+    inline const string &getUsername() const {
         return username;
     }
 
-    void setUsername(const string &username) {
-        Client::username = username;
+    inline bool isUsernameLogged() const {
+        return usernameLogged;
     }
+
+    inline bool isPasswordLogged() const {
+        return passwordLogged;
+    }
+
+    inline bool isWaiting() const {
+        return waiting;
+    }
+
+
+private:
+    int socketDescriptor;
+    string username;
+    bool usernameLogged;
+    bool passwordLogged;
+    bool waiting;
+    //TODO: Pointer to domino board
 };
 
 
