@@ -103,8 +103,8 @@ void DominoesServer::start() {
 void DominoesServer::end() {
     cout << "\t* El servidor se cerrará después de avisar a los clientes *" << endl;
 
-    for (list<Client>::const_iterator it = clients.begin(); it != clients.end(); it++)
-        sendMessage(it->getSocketDescriptor(), "*INFO. El servidor va a cerrar");
+    for (auto & client : clients)
+        sendMessage(client.getSocketDescriptor(), "*INFO. El servidor va a cerrar");
 
     clients.empty();
     // TODO: Vaciar lista partidas
@@ -184,9 +184,9 @@ void DominoesServer::removeClient(int goneClientSocketD) {
     // TODO: Si el cliente estaba jugando, notificar a su oponente, poner a su oponente en not playing y eliminar la partida
 
     // Se elimina de la lista de clientes
-    for (list<Client>::const_iterator it = clients.begin(); it != clients.end(); it++)
-        if (it->getSocketDescriptor() == goneClientSocketD) {
-            clients.erase(it);
+    for (auto client = clients.begin(); client != clients.end(); client++)
+        if (client->getSocketDescriptor() == goneClientSocketD) {
+            clients.erase(client);
             break;
         }
 
@@ -320,8 +320,28 @@ void DominoesServer::handleRobarFichaCommand(int clientSocketD) {
 }
 
 void DominoesServer::sendHelp(int clientSocketD) {
-    // TODO
-    sendMessage(clientSocketD, "*INFO. SIN IMPLEMENTAR");
+    // Obtenemos el cliente para mostrar ayuda contextual
+    Client client = findClient(clientSocketD);
+
+    sendMessage(clientSocketD, "*INFO. Comandos disponibles:\n");
+
+    if(!client.isPasswordLogged()) {
+        sendMessage(clientSocketD, "\tUSUARIO nombreDeUsuario\n");
+        sendMessage(clientSocketD, "\tPASSWORD contraseña\n");
+        sendMessage(clientSocketD, "\tREGISTRO -u nombreDeUsuario -p contraseña\n");
+    }
+
+    if(client.isWaiting())
+        sendMessage(clientSocketD, "\tINICIAR-PARTIDA\n");
+
+    if(client.isPlaying()) {
+        sendMessage(clientSocketD, "\tCOLOCAR-FICHA\n");
+        sendMessage(clientSocketD, "\tPASO-TURNO\n");
+        sendMessage(clientSocketD, "\tROBAR-FICHA\n");
+    }
+
+    sendMessage(clientSocketD, "\tAYUDA\n");
+    sendMessage(clientSocketD, "\tSALIR\n");
 }
 
 void DominoesServer::handleSalirCommand(int clientSocketD) {
@@ -330,4 +350,10 @@ void DominoesServer::handleSalirCommand(int clientSocketD) {
     cout << "\t* Cliente abandona en socket " << clientSocketD << " *" << endl;
 
     removeClient(clientSocketD);
+}
+
+Client & DominoesServer::findClient(int clientSocketD) {
+    for (auto & client : clients)
+        if (client.getSocketDescriptor() == clientSocketD)
+            return client;
 }

@@ -77,6 +77,8 @@ private:
     void sendHelp(int clientSocketD);
 
     void handleSalirCommand(int clientSocketD);
+
+    Client & findClient(int clientSocketD);
 };
 
 
