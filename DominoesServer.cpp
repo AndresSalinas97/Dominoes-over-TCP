@@ -25,10 +25,6 @@ using std::endl;
 using std::string;
 
 
-DominoesServer::DominoesServer(const Socket &serverSocket) {
-    this->serverSocket = serverSocket;
-}
-
 void DominoesServer::start() {
     fd_set auxFDS; // Set de descriptores auxiliar para la funcion select()
     char receivedMessage[MSG_SIZE];
@@ -97,7 +93,11 @@ void DominoesServer::start() {
 void DominoesServer::end() {
     cout << "\t* El servidor se cerrará después de avisar a los clientes *" << endl;
 
-    // TODO: Avisar a los clientes
+    for (list<Client>::const_iterator it = clients.begin(); it != clients.end(); it++)
+        sendMessage(it->getSocketDescriptor(), "*INFO. El servidor va a cerrar");
+
+    clients.empty();
+    // TODO: Vaciar lista partidas
 
     serverSocket.close();
 
@@ -140,12 +140,15 @@ void DominoesServer::handleNewClient() {
                                    &clientAddressLength)) < 0) {
         cerr << "Error en accept(): " << strerror(errno) << endl;
     } else {
-        // TODO: Comprobamos que no se supere el limite de clientes
-        if (false) {
-            sendMessage(newClientSocketD, "-ERR. Se ha superado el número de usuarios conectados");
+        if (clients.size() >= MAX_CLIENTS) {
+            sendMessage(newClientSocketD, "-ERR. Se ha superado el número de "
+                                          "usuarios conectados");
         } else {
             // Tenemos un nuevo cliente
-            // TODO
+
+            // Añadimos el nuevo cliente a la lista de clientes
+            Client newClient(newClientSocketD);
+            clients.push_back(newClient);
 
             FD_SET(newClientSocketD, &readFDS);
 
@@ -157,16 +160,26 @@ void DominoesServer::handleNewClient() {
 }
 
 void DominoesServer::handleGoneClient(int goneClientSocketD) {
-    // TODO
     cout << "\t* Cliente desconectado en socket " << goneClientSocketD << " *" << endl;
 
+    // TODO: Si el cliente estaba jugando, notificar a su oponente, poner a su oponente en not playing y eliminar la partida
+
+    // Se elimina de la lista de clientes
+    for (list<Client>::const_iterator it = clients.begin(); it != clients.end(); it++)
+        if (it->getSocketDescriptor() == goneClientSocketD) {
+            clients.erase(it);
+            break;
+        }
+
+    // Se cierra su socket
     close(goneClientSocketD);
 
+    // Se elimina su socket de readFDS
     FD_CLR(goneClientSocketD, &readFDS);
 }
 
 void DominoesServer::handleClientCommunication(int clientSocketD,
-                                               string receivedMessage) {
+                                               const string &receivedMessage) {
     // TODO
     cout << "Socket " << clientSocketD << ": " << receivedMessage << endl; // TODO: eliminar
 }
@@ -174,6 +187,6 @@ void DominoesServer::handleClientCommunication(int clientSocketD,
 void DominoesServer::printStats() {
     cout << "\t* STATS *" << endl;
 
-    // TODO: Imprimir estadísticas (usuarios conectados, usuarios registrados, partidas en curso...)
-    cerr << "\t\tSin implementar" << endl;
+    cout << "\t\tClientes conectados: " << clients.size() << endl;
+    // TODO: Imprimir número de partidas en curso
 }

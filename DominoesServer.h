@@ -12,17 +12,20 @@
 
 
 #include "Socket.h"
+#include "Client.h"
 
 #include <sys/socket.h>
 #include <string>
+#include <list>
 
 
 using std::string;
+using std::list;
 
 
 class DominoesServer {
 public:
-    explicit DominoesServer(const Socket &serverSocket);
+    inline explicit DominoesServer(const Socket &serverSocket) : serverSocket(serverSocket) {};
 
     void start();
 
@@ -30,8 +33,9 @@ public:
 
 
 private:
-    Socket serverSocket; // Objeto Socket del servidor
-    fd_set readFDS{};    // Set de descriptores para la funcion select()
+    Socket serverSocket;  // Objeto Socket del servidor
+    fd_set readFDS{};     // Set de descriptores para la funcion select()
+    list<Client> clients; // Lista de clientes conectados
 
     static void sendMessage(int destinationSocketD, const char *message);
 
@@ -41,7 +45,7 @@ private:
 
     void handleGoneClient(int goneClientSocketD);
 
-    void handleClientCommunication(int clientSocketD, string receivedMessage);
+    void handleClientCommunication(int clientSocketD, const string &receivedMessage);
 
     void printStats();
 };
