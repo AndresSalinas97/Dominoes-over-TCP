@@ -92,7 +92,6 @@ int main(int argc, char **argv) {
                                             "usuarios conectados") == 0)
                     end = true;
             }
-
         } else if (FD_ISSET(0, &auxFDS)) {
             // El usuario ha tecleado un mensaje
 
@@ -107,10 +106,10 @@ int main(int argc, char **argv) {
                 exit(EXIT_FAILURE);
             }
         }
+
         fflush(stdout);
         fflush(stderr);
     } while (!end);
-
 
     return EXIT_SUCCESS;
 }
