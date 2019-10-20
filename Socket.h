@@ -24,12 +24,16 @@ public:
     /**
      * Destructor: Se cierra el socket.
      */
-    inline ~Socket() { this->close(); }
+    inline ~Socket() {
+        this->close();
+    }
 
     /**
      * Devuelve el descriptor del socket.
      */
-    inline int getDescriptor() { return socketDescriptor; }
+    inline int getDescriptor() {
+        return socketDescriptor;
+    }
 
     /**
      * Realiza las operaciones necesarias para que un socket servidor empiece a
