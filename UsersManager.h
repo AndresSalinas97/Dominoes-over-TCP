@@ -28,18 +28,26 @@ public:
 
     void removeUser(int socketD);
 
-    User *getUser(int socketD);
+    /**
+     * Devuelve el usuario con el descriptor de socket especificado.
+     * @warning Si no existiera ningún usuario con ese descriptor de socket se
+     * devuelve un new User(-1)
+     */
+    const User &getUser(int socketD) const;
 
-    inline const list<User> &getUsers() const { return users; }
+    inline const list<User> &getUsers() const {
+        return users;
+    }
 
-    inline int getNUsers() const { return users.size(); }
+    inline int getNUsers() const {
+        return users.size();
+    }
 
     //int getNRegisteredUsers() const;
 
 
 private:
     list<User> users; // Lista de usuarios conectados
-
 };
 
 

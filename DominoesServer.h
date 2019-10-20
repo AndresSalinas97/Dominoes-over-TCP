@@ -56,7 +56,7 @@ private:
 
     void handleClientCommunication(int clientSocketD, const string &receivedMessage);
 
-    void printStats();
+    void printStats() const;
 
     static void printHelp();
 

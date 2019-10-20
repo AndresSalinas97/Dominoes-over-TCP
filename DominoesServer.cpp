@@ -256,7 +256,7 @@ void DominoesServer::handleClientCommunication(int clientSocketD,
     }
 }
 
-void DominoesServer::printStats() {
+void DominoesServer::printStats() const {
     cout << "\t* ESTADÍSTICAS *" << endl;
 
     cout << "\t\tClientes conectados: " << usersManager.getNUsers() << endl;
@@ -308,7 +308,7 @@ void DominoesServer::handleRobarFichaCommand(int clientSocketD) {
 
 void DominoesServer::sendHelp(int clientSocketD) {
     // Obtenemos el cliente para mostrar ayuda contextual
-    User user = * usersManager.getUser(clientSocketD);
+    User user = usersManager.getUser(clientSocketD);
 
     sendMessage(clientSocketD, "*INFO. Comandos disponibles para su estado actual:\n");
 

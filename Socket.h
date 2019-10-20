@@ -31,7 +31,7 @@ public:
     /**
      * Devuelve el descriptor del socket.
      */
-    inline int getDescriptor() {
+    inline int getDescriptor() const {
         return socketDescriptor;
     }
 

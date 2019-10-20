@@ -22,10 +22,10 @@ void UsersManager::removeUser(int socketD) {
         }
 }
 
-User *UsersManager::getUser(int socketD) {
-    for (auto & user : users)
+const User &UsersManager::getUser(int socketD) const {
+    for (auto &user : users)
         if (user.getSocketDescriptor() == socketD)
-            return &user;
+            return user;
 
-    return nullptr;
+    return *new User(-1);
 }
