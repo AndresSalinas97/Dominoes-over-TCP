@@ -34,7 +34,7 @@ void signalHandler(int);
 int main(int argc, char **argv) {
     // Se comprueban y procesan los argumentos pasados por la línea de comandos
     if (argc != 2) {
-        cerr << "Uso del programa: " << argv[0] << " direcciónIPservidor" << endl;
+        cerr << "Uso del programa: " << argv[0] << " direcciónIPServidor" << endl;
         exit(EXIT_FAILURE);
     }
     char *serverIPAddress = argv[1];
@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
 
 
     // Inicializamos los conjuntos fd_set para la función select()
-    fd_set readFDS, auxFDS; // Sets de descriptores para la funcion select()
+    fd_set readFDS, auxFDS; // Sets de descriptores para la función select()
     FD_ZERO(&auxFDS); // Vacía el el set
     FD_ZERO(&readFDS); // Vacía el set
     FD_SET(0, &readFDS); // Añade stdin al set de descriptores de lectura

@@ -38,7 +38,7 @@ void DominoesServer::start() {
     cout << "\t* Servidor iniciado *" << endl;
 
     // Inicializamos los conjuntos fd_set para la función select()
-    fd_set auxFDS; // Set de descriptores auxiliar para la funcion select()
+    fd_set auxFDS; // Set de descriptores auxiliar para la función select()
     FD_ZERO(&auxFDS); // Vacía el el set
     FD_ZERO(&readFDS); // Vacía el set
     FD_SET((unsigned) 0, &readFDS); // Añade stdin al set de descriptores de lectura
@@ -65,7 +65,7 @@ void DominoesServer::start() {
                     handleUserInput();
                 } else if (activeSocketD == serverSocket.getDescriptor()) {
                     // Tenemos nuevos datos en el socket del servidor lo que
-                    // siginifica que tenemos un nuevo cliente
+                    // significa que tenemos un nuevo cliente
                     handleNewClient();
                 } else {
                     // Tenemos nuevos datos en el socket de algún cliente
