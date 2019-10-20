@@ -2,7 +2,8 @@
  * @file    UsersManager.h
  * @author  Andrés Salinas Lima
  * @date    18/10/2019
- * @brief   Declaración de la clase UsersManager: TODO
+ * @brief   Declaración de la clase UsersManager: Gestiona la lista de usuarios
+ *          conectados y les permite registrarse e iniciar sesión.
  */
 
 
@@ -19,7 +20,8 @@ using std::list;
 
 
 /**
- * TODO: Documentar clase
+ * Clase UsersManager: Gestiona la lista de usuarios conectados y les permite
+ * registrarse e iniciar sesión.
  */
 class UsersManager {
 // TODO: Documentar miembros clase
@@ -43,7 +45,7 @@ public:
         return users.size();
     }
 
-    //int getNRegisteredUsers() const;
+    // TODO: int getNRegisteredUsers() const;
 
 
 private:
