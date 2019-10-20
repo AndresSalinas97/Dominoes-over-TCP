@@ -2,8 +2,7 @@
  * @file    User.h
  * @author  Andrés Salinas Lima
  * @date    18/10/2019
- * @brief   Declaración de la clase User: Representa clientes de nuestro servidor,
- *          ya estén registrados o todavía no y ya estén jugando o todavía no.
+ * @brief   Declaración de la clase User: Representa a los usuarios conectados.
  */
 
 #ifndef DOMINOES_OVER_TCP_USER_H
@@ -17,14 +16,13 @@ using std::string;
 
 
 /**
- * Clase User: Representa clientes de nuestro servidor, ya estén registrados o
- * todavía no y ya estén jugando o todavía no.
+ * Clase User: Representa a los usuarios conectados.
  */
 class User {
 public:
     /**
      * Constructor: Crea un nuevo usuario con el descriptor de socket pasado
-     * como argumento y con todos los booleanos inicializados con false.
+     * como argumento y con todos los booleanos inicializados a false.
      */
     inline explicit User(int socketDescriptor) :
             username(""),
