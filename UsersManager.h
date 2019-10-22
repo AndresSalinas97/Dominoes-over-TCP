@@ -38,7 +38,6 @@ public:
      */
     const User &getUser(int userSocketD) const;
 
-    // TODO: Valorar eliminar
     inline const list<User> &getUsers() const {
         return users;
     }

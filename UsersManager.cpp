@@ -61,7 +61,7 @@ bool UsersManager::usernameExists(const string &username) const {
 
     ifstream inFile(usersFilePath);
     if (!inFile) {
-        cerr << "Error al leer en fichero " << usersFilePath << endl;
+        cerr << "Error al leer del fichero " << usersFilePath << endl;
         exit(EXIT_FAILURE);
     }
 
@@ -87,7 +87,7 @@ int UsersManager::getNRegisteredUsers() const {
 
     ifstream inFile(usersFilePath);
     if (!inFile) {
-        cerr << "Error al leer en fichero " << usersFilePath << endl;
+        cerr << "Error al leer del fichero " << usersFilePath << endl;
         exit(EXIT_FAILURE);
     }
 
@@ -113,7 +113,7 @@ bool UsersManager::registerUser(int userSocketD, const string &username,
     outFile.close();
 
     if (!outFile) {
-        cerr << "Error al escribir en fichero " << usersFilePath << endl;
+        cerr << "Error al escribir en el fichero " << usersFilePath << endl;
         exit(EXIT_FAILURE);
     }
 
@@ -149,7 +149,7 @@ bool UsersManager::loginPassword(int userSocketD, const string &password) {
 
     ifstream inFile(usersFilePath);
     if (!inFile) {
-        cerr << "Error al leer en fichero " << usersFilePath << endl;
+        cerr << "Error al leer del fichero " << usersFilePath << endl;
         exit(EXIT_FAILURE);
     }
 
