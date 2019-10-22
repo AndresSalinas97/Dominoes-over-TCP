@@ -12,6 +12,7 @@
 
 
 #include "User.h"
+#include "constants.h"
 
 #include <list>
 
@@ -26,16 +27,16 @@ using std::list;
 class UsersManager {
 // TODO: Documentar miembros clase
 public:
-    void addUser(int socketD);
+    void addUser(int userSocketD);
 
-    void removeUser(int socketD);
+    void removeUser(int userSocketD);
 
     /**
      * Devuelve el usuario con el descriptor de socket especificado.
      * @warning Si no existiera ningún usuario con ese descriptor de socket se
      * devuelve un new User(-1)
      */
-    const User &getUser(int socketD) const;
+    const User &getUser(int userSocketD) const;
 
     inline const list<User> &getUsers() const {
         return users;
@@ -45,11 +46,26 @@ public:
         return users.size();
     }
 
-    // TODO: int getNRegisteredUsers() const;
+    int getNRegisteredUsers() const;
+
+    bool registerUser(int userSocketD, const string &username, const string &password);
+
+    bool loginUsername(int userSocketD, const string &username);
+
+    bool loginPassword(int userSocketD, const string &password);
 
 
 private:
     list<User> users; // Lista de usuarios conectados
+    const string usersFilePath = USERS_FILE_PATH; // Path del fichero donde se
+    // almacenan los usuarios y contraseñas en TEXTO PLANO (separado por comas).
+
+    User *getUserPtr(int userSocketD);
+
+    bool usersFileExists();
+
+    bool usernameExists(const string &username);
+
 };
 
 
