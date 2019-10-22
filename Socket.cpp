@@ -49,7 +49,7 @@ void Socket::setsockopt() {
 
 void Socket::bind() {
     // Se rellenan los campos de la estructura de la dirección del servidor
-    // (necesario para la llamada a la función bind())
+    // (necesario para la llamada a la funcion bind())
     struct sockaddr_in serverAddress = {};
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons(SERVER_PORT);
