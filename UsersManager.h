@@ -38,6 +38,7 @@ public:
      */
     const User &getUser(int userSocketD) const;
 
+    // TODO: Valorar eliminar
     inline const list<User> &getUsers() const {
         return users;
     }
@@ -60,11 +61,16 @@ private:
     const string usersFilePath = USERS_FILE_PATH; // Path del fichero donde se
     // almacenan los usuarios y contraseñas en TEXTO PLANO (separado por comas).
 
+    /**
+     * Devuelve un puntero al usuario con el descriptor de socket especificado.
+     * @warning Si no existiera ningún usuario con ese descriptor de socket se
+     * devuelve nullptr
+     */
     User *getUserPtr(int userSocketD);
 
-    bool usersFileExists();
+    bool usersFileExists() const;
 
-    bool usernameExists(const string &username);
+    bool usernameExists(const string &username) const;
 
 };
 

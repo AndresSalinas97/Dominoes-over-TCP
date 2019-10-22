@@ -10,12 +10,15 @@
 #include "UsersManager.h"
 #include <fstream>
 #include <iostream>
+#include <vector>
+#include <sstream>
 
 
 using std::ifstream;
 using std::ofstream;
 using std::endl;
 using std::cerr;
+using std::vector;
 
 
 void UsersManager::addUser(int userSocketD) {
@@ -47,19 +50,54 @@ User *UsersManager::getUserPtr(int userSocketD) {
     return nullptr;
 }
 
-bool UsersManager::usersFileExists() {
+bool UsersManager::usersFileExists() const {
     ifstream f(usersFilePath);
     return f.good();
 }
 
-bool UsersManager::usernameExists(const string &username) {
-    // TODO
+bool UsersManager::usernameExists(const string &username) const {
+    if (!usersFileExists())
+        return false;
+
+    ifstream inFile(usersFilePath);
+    if (!inFile) {
+        cerr << "Error al leer en fichero " << usersFilePath << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    string line, readUsername;
+    while (inFile >> line) {
+        // Separamos username de la contraseña
+        std::stringstream check1(line);
+        getline(check1, readUsername, ',');
+
+        if (username == readUsername) {
+            inFile.close();
+            return true;
+        }
+    }
+
+    inFile.close();
     return false;
 }
 
 int UsersManager::getNRegisteredUsers() const {
-    // TODO
-    return 0;
+    if (!usersFileExists())
+        return 0;
+
+    ifstream inFile(usersFilePath);
+    if (!inFile) {
+        cerr << "Error al leer en fichero " << usersFilePath << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    string unused;
+    int nLines = 0;
+    while (inFile >> unused)
+        ++nLines;
+
+    inFile.close();
+    return nLines;
 }
 
 bool UsersManager::registerUser(int userSocketD, const string &username,
@@ -76,7 +114,7 @@ bool UsersManager::registerUser(int userSocketD, const string &username,
 
     if (!outFile) {
         cerr << "Error al escribir en fichero " << usersFilePath << endl;
-        return false;
+        exit(EXIT_FAILURE);
     }
 
     // Hacemos login al usuario
@@ -92,13 +130,43 @@ bool UsersManager::loginUsername(int userSocketD, const string &username) {
     if (!usersFileExists())
         return false;
 
-    return usernameExists(username);
+    if (usernameExists(username)) {
+        User *user = getUserPtr(userSocketD);
+        user->setUsername(username);
+        user->setUsernameLogged(true);
+
+        return true;
+    }
+
+    return false;
 }
 
 bool UsersManager::loginPassword(int userSocketD, const string &password) {
     if (!usersFileExists())
         return false;
 
-    // TODO
+    User *user = getUserPtr(userSocketD);
+
+    ifstream inFile(usersFilePath);
+    if (!inFile) {
+        cerr << "Error al leer en fichero " << usersFilePath << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    string line, readUsername, readPassword;
+    while (inFile >> line) {
+        // Separamos username y contraseña
+        std::stringstream check1(line);
+        getline(check1, readUsername, ',');
+        getline(check1, readPassword, ',');
+
+        if (user->getUsername() == readUsername && password == readPassword) {
+            user->setPasswordLogged(true);
+            inFile.close();
+            return true;
+        }
+    }
+
+    inFile.close();
     return false;
 }
