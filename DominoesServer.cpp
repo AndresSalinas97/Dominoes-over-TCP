@@ -190,7 +190,8 @@ void DominoesServer::handleClientCommunication(int clientSocketD,
 
     // Separamos receivedMessage en palabras
     std::istringstream iss(receivedMessage);
-    vector<string> tokens{std::istream_iterator<string>{iss}, std::istream_iterator<string>{}};
+    vector<string> tokens{std::istream_iterator<string>{iss},
+                          std::istream_iterator<string>{}};
 
     if (tokens.empty()) {
         sendMessage(clientSocketD, "-ERR. Mensaje no válido");
@@ -210,7 +211,7 @@ void DominoesServer::handleClientCommunication(int clientSocketD,
             handlePasswordCommand(clientSocketD, tokens[1]);
 
     } else if (tokens[0] == "REGISTRO") {
-        if (tokens.size() != 5 || tokens[1] != "-d" || tokens[3] != "-p")
+        if (tokens.size() != 5 || tokens[1] != "-u" || tokens[3] != "-p")
             sendMessage(clientSocketD, "-ERR. Formato no válido");
         else
             handleRegistroCommand(clientSocketD, tokens[2], tokens[4]);
@@ -261,7 +262,7 @@ void DominoesServer::printStats() const {
 
     cout << "\t\tClientes conectados: " << usersManager.getNUsers() << endl;
     cout << "\t\tPartidas en curso: " << "?" << endl; // TODO
-    cout << "\t\tClientes registrados: " << "?" << endl; // TODO
+    cout << "\t\tClientes registrados: " << usersManager.getNRegisteredUsers() << endl;
 }
 
 void DominoesServer::printHelp() {
@@ -272,36 +273,100 @@ void DominoesServer::printHelp() {
 }
 
 void DominoesServer::handleUsuarioCommand(int clientSocketD, const string &username) {
-    // TODO
-    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
+    User user = usersManager.getUser(clientSocketD);
+
+    if (user.isPasswordLogged()) {
+        sendMessage(clientSocketD, "-ERR. Ya has iniciado sesión");
+        return;
+    }
+
+    if (usersManager.loginUsername(clientSocketD, username))
+        sendMessage(clientSocketD, "+OK. Usuario correcto");
+    else
+        sendMessage(clientSocketD, "-ERR. Usuario incorrecto");
 }
 
 void DominoesServer::handlePasswordCommand(int clientSocketD, const string &password) {
-    // TODO
-    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
+    User user = usersManager.getUser(clientSocketD);
+
+    if (user.isPasswordLogged()) {
+        sendMessage(clientSocketD, "-ERR. Ya has iniciado sesión");
+        return;
+    }
+
+    if (!user.isUsernameLogged()) {
+        sendMessage(clientSocketD, "-ERR. Todavía no has introducido el nombre de"
+                                   " usuario");
+        return;
+    }
+
+    if (usersManager.loginPassword(clientSocketD, password))
+        sendMessage(clientSocketD, "+OK. Usuario validado");
+    else
+        sendMessage(clientSocketD, "-ERR. Error en la validación");
 }
 
-void DominoesServer::handleRegistroCommand(int clientSocketD, const string &username, const string &password) {
-    // TODO
-    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
+void DominoesServer::handleRegistroCommand(int clientSocketD, const string &username,
+                                           const string &password) {
+    User user = usersManager.getUser(clientSocketD);
+
+    if (user.isPasswordLogged()) {
+        sendMessage(clientSocketD, "-ERR. Ya has iniciado sesión");
+        return;
+    }
+
+    if (usersManager.registerUser(clientSocketD, username, password))
+        sendMessage(clientSocketD, "+OK. Usuario registrado y sesión iniciada.");
+    else
+        sendMessage(clientSocketD, "-ERR. Error en el registro. Pruebe con otro "
+                                   "nombre de usuario");
 }
 
 void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
+    User user = usersManager.getUser(clientSocketD);
+
+    if (!user.isPasswordLogged()) {
+        sendMessage(clientSocketD, "-ERR. Todavía no has iniciado sesión");
+        return;
+    }
+
     // TODO
     sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
 }
 
-void DominoesServer::handleColocarFichaCommand(int clientSocketD, const string &dominoAndSide) {
+void DominoesServer::handleColocarFichaCommand(int clientSocketD,
+                                               const string &dominoAndSide) {
+    User user = usersManager.getUser(clientSocketD);
+
+    if (!user.isPlaying()) {
+        sendMessage(clientSocketD, "-ERR. Todavía no estás jugando");
+        return;
+    }
+
     // TODO
     sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
 }
 
 void DominoesServer::handlePasoTurnoCommand(int clientSocketD) {
+    User user = usersManager.getUser(clientSocketD);
+
+    if (!user.isPlaying()) {
+        sendMessage(clientSocketD, "-ERR. Todavía no estás jugando");
+        return;
+    }
+
     // TODO
     sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
 }
 
 void DominoesServer::handleRobarFichaCommand(int clientSocketD) {
+    User user = usersManager.getUser(clientSocketD);
+
+    if (!user.isPlaying()) {
+        sendMessage(clientSocketD, "-ERR. Todavía no estás jugando");
+        return;
+    }
+
     // TODO
     sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
 }

@@ -29,7 +29,8 @@ using std::string;
 class DominoesServer {
 // TODO: Documentar miembros clase
 public:
-    inline explicit DominoesServer(const Socket &serverSocket) : serverSocket(serverSocket) {};
+    inline explicit DominoesServer(const Socket &serverSocket)
+            : serverSocket(serverSocket) {};
 
     void start();
 
@@ -38,7 +39,7 @@ public:
 
 private:
     Socket serverSocket;       // Objeto Socket del servidor
-    fd_set readFDS{};          // Set de descriptores para la funcion select()
+    fd_set readFDS{};          // Set de descriptores para la función select()
     UsersManager usersManager; // Mánager de usuarios
 
     static void sendMessage(int destinationSocketD, const char *message);
@@ -64,7 +65,8 @@ private:
 
     void handlePasswordCommand(int clientSocketD, const string &password);
 
-    void handleRegistroCommand(int clientSocketD, const string &username, const string &password);
+    void handleRegistroCommand(int clientSocketD, const string &username,
+                               const string &password);
 
     void handleIniciarPartidaCommand(int clientSocketD);
 
