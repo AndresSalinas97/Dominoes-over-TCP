@@ -273,37 +273,37 @@ void DominoesServer::printHelp() {
 
 void DominoesServer::handleUsuarioCommand(int clientSocketD, const string &username) {
     // TODO
-    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR");
+    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
 }
 
 void DominoesServer::handlePasswordCommand(int clientSocketD, const string &password) {
     // TODO
-    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR");
+    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
 }
 
 void DominoesServer::handleRegistroCommand(int clientSocketD, const string &username, const string &password) {
     // TODO
-    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR");
+    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
 }
 
 void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
     // TODO
-    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR");
+    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
 }
 
 void DominoesServer::handleColocarFichaCommand(int clientSocketD, const string &dominoAndSide) {
     // TODO
-    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR");
+    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
 }
 
 void DominoesServer::handlePasoTurnoCommand(int clientSocketD) {
     // TODO
-    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR");
+    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
 }
 
 void DominoesServer::handleRobarFichaCommand(int clientSocketD) {
     // TODO
-    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR");
+    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
 }
 
 void DominoesServer::sendHelp(int clientSocketD) {
@@ -313,21 +313,21 @@ void DominoesServer::sendHelp(int clientSocketD) {
     sendMessage(clientSocketD, "*INFO. Comandos disponibles para su estado actual:\n");
 
     if (!user.isPasswordLogged()) {
-        sendMessage(clientSocketD, "\tUSUARIO nombreDeUsuario\n");
-        sendMessage(clientSocketD, "\tPASSWORD contraseña\n");
-        sendMessage(clientSocketD, "\tREGISTRO -u nombreDeUsuario -p contraseña\n");
+        sendMessage(clientSocketD, "\tUSUARIO nombreDeUsuario\n"
+                                   "\tPASSWORD contraseña\n"
+                                   "\tREGISTRO -u nombreDeUsuario -p contraseña\n");
     } else {
         sendMessage(clientSocketD, "\tINICIAR-PARTIDA\n");
     }
 
     if (user.isPlaying()) {
-        sendMessage(clientSocketD, "\tCOLOCAR-FICHA |valor1|valor2|,extremo\n");
-        sendMessage(clientSocketD, "\tPASO-TURNO\n");
-        sendMessage(clientSocketD, "\tROBAR-FICHA\n");
+        sendMessage(clientSocketD, "\tCOLOCAR-FICHA |valor1|valor2|,extremo\n"
+                                   "\tPASO-TURNO\n"
+                                   "\tROBAR-FICHA\n");
     }
 
-    sendMessage(clientSocketD, "\tAYUDA\n");
-    sendMessage(clientSocketD, "\tSALIR\n");
+    sendMessage(clientSocketD, "\tAYUDA\n"
+                               "\tSALIR\n");
 }
 
 void DominoesServer::handleSalirCommand(int clientSocketD) {
