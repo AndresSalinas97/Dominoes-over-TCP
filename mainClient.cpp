@@ -7,7 +7,7 @@
 
 
 #include "constants.h"
-#include "Socket.h"
+#include "ClientSocket.h"
 
 #include <iostream>
 #include <cstdlib>
@@ -41,8 +41,8 @@ int main(int argc, char **argv) {
 
 
     // Abrimos el socket y lo conectamos al servidor
-    Socket socket;
-    socket.prepareClientSocket(serverIPAddress);
+    ClientSocket socket;
+    socket.prepare(serverIPAddress);
     socketDescriptor = socket.getDescriptor();
 
 

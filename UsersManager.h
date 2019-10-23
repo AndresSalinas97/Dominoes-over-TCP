@@ -21,7 +21,7 @@ using std::list;
 
 
 /**
- * Clase UsersManager: Gestiona la lista de usuarios conectados y les permite
+ * @class UsersManager: Gestiona la lista de usuarios conectados y les permite
  * registrarse e iniciar sesión.
  */
 class UsersManager {
@@ -53,7 +53,6 @@ public:
     bool loginUsername(int userSocketD, const string &username);
 
     bool loginPassword(int userSocketD, const string &password);
-
 
 private:
     list<User> users; // Lista de usuarios conectados

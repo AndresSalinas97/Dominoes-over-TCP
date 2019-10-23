@@ -2,8 +2,7 @@
  * @file    DominoesServer.cpp
  * @author  Andrés Salinas Lima
  * @date    17/10/2019
- * @brief   Código de la clase DominoesServer: Clase para gestionar el
- *          servidor del juego del Dominó.
+ * @brief   Código de la clase DominoesServer.
  */
 
 

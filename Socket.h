@@ -1,9 +1,8 @@
 /**
- * @file    Socket.cpp
+ * @file    Socket.h
  * @author  Andrés Salinas Lima
  * @date    17/10/2019
- * @brief   Declaración de la clase Socket: Abre, habilita y cierra
- *          sockets para el cliente y el servidor.
+ * @brief   Declaración de la clase Socket.
  */
 
 
@@ -11,16 +10,35 @@
 #define DOMINOES_OVER_TCP_SOCKET_H
 
 
+#include <iostream>
+#include <cstdlib>
+#include <cstring>
+#include <unistd.h>
+#include <sys/socket.h>
+
+
+using std::cerr;
+using std::endl;
+
+
 /**
- * Clase Socket: Abre, habilita y cierra sockets para el cliente y el servidor.
+ * @class Socket: Base para las clases ServerSocket y ClientSocket
  */
 class Socket {
-public:
+protected:
     /**
      * Constructor: Se abre el socket.
+     * (Protegido para evitar que esta clase sea instanciada)
      */
-    Socket();
+    inline Socket() {
+        socketDescriptor = socket(AF_INET, SOCK_STREAM, 0);
+        if (socketDescriptor < 0) {
+            cerr << "No se puede abrir el socket: " << strerror(errno) << endl;
+            exit(EXIT_FAILURE);
+        }
+    }
 
+public:
     /**
      * Destructor: Se cierra el socket.
      */
@@ -36,53 +54,17 @@ public:
     }
 
     /**
-     * Realiza las operaciones necesarias para que un socket servidor empiece a
-     * recibir conexiones.
-     */
-    void prepareServerSocket();
-
-    /**
-     * Realiza las operaciones necesarias para que un socket cliente se
-     * comunique con el servidor en la dirección especificada.
-     */
-    void prepareClientSocket(const char *serverIPAddress);
-
-    /**
      * Se cierra el socket.
      */
-    void close();
-
+    inline void close() {
+        if ((::close(socketDescriptor)) < 0) {
+            cerr << "No se puede cerrar el socket: " << strerror(errno) << endl;
+            exit(EXIT_FAILURE);
+        }
+    }
 
 private:
     int socketDescriptor; // Descriptor del socket
-
-    /**
-     * (Solo para socket servidor)
-     * Establece las opciones del socket para permitir que otro programa
-     * reutilice el puerto sin tener que esperar el tiempo de espera (TIME_WAIT
-     * en el caso de TCP).
-     */
-    void setsockopt();
-
-    /**
-     * (Solo para socket servidor)
-     * Asocia el socket a un puerto (para decirle al SO que deseamos atender
-     * a un determinado servicio, de forma que cuando llegue un mensaje por ese
-     * servicio nos avise).
-     */
-    void bind();
-
-    /**
-     * (Solo para socket servidor)
-     * Habilita el socket para que pueda recibir conexiones.
-     */
-    void listen();
-
-    /**
-     * (Solo para socket cliente)
-     * Solicita la conexión con el servidor.
-     */
-    void connect(struct sockaddr_in &serverAddress);
 };
 
 

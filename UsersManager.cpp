@@ -2,8 +2,7 @@
  * @file    UsersManager.cpp
  * @author  Andrés Salinas Lima
  * @date    18/10/2019
- * @brief   Código de la clase UsersManager: Gestiona la lista de usuarios
- *          conectados y les permite registrarse e iniciar sesión.
+ * @brief   Código de la clase UsersManager.
  */
 
 

@@ -8,7 +8,7 @@
 
 
 #include "DominoesServer.h"
-#include "Socket.h"
+#include "ServerSocket.h"
 
 #include <csignal>
 #include <iostream>
@@ -22,8 +22,8 @@ void signalHandler(int);
 
 int main() {
     // Abrimos el socket y lo habilitamos para que pueda recibir conexiones
-    Socket socket;
-    socket.prepareServerSocket();
+    ServerSocket socket;
+    socket.prepare();
 
     // Creamos el objeto dominoesServer e inicializamos dominoesServerPointer
     // para que se pueda usar en signalHandler()

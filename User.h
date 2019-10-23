@@ -2,7 +2,7 @@
  * @file    User.h
  * @author  Andrés Salinas Lima
  * @date    18/10/2019
- * @brief   Declaración de la clase User: Representa a los usuarios conectados.
+ * @brief   Declaración de la clase User.
  */
 
 #ifndef DOMINOES_OVER_TCP_USER_H
@@ -16,7 +16,7 @@ using std::string;
 
 
 /**
- * Clase User: Representa a los usuarios conectados.
+ * @class User: Representa a los usuarios conectados.
  */
 class User {
 public:

@@ -2,8 +2,7 @@
  * @file    DominoesServer.h
  * @author  Andrés Salinas Lima
  * @date    17/10/2019
- * @brief   Declaración de la clase DominoesServer: Clase para gestionar el
- *          servidor del juego del Dominó.
+ * @brief   Declaración de la clase DominoesServer.
  */
 
 
@@ -24,7 +23,7 @@ using std::string;
 
 
 /**
- * Clase para gestionar el servidor del juego del Dominó.
+ * @class DominoesServer: clase para gestionar el servidor del juego del Dominó.
  */
 class DominoesServer {
 // TODO: Documentar miembros clase
@@ -35,7 +34,6 @@ public:
     void start();
 
     void end();
-
 
 private:
     Socket serverSocket;       // Objeto Socket del servidor
