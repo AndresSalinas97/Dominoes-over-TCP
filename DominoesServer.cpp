@@ -145,6 +145,7 @@ void DominoesServer::handleNewClient() {
                                    &clientAddressLength)) < 0) {
         cerr << "Error en accept(): " << strerror(errno) << endl;
     } else {
+        // Comprobamos que no hayamos superado el número máximo de clientes conectados
         if (usersManager.getNUsers() >= MAX_CLIENTS) {
             sendMessage(newClientSocketD, "-ERR. Se ha superado el número de "
                                           "usuarios conectados");
