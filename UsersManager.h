@@ -24,7 +24,6 @@ using std::list;
  * registrarse e iniciar sesión.
  */
 class UsersManager {
-// TODO: Documentar miembros clase
 public:
     /**
      * Crea un nuevo usuario con el socketD indicado y lo añade a la lista de
