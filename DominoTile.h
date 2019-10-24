@@ -1,13 +1,13 @@
 /**
- * @file    Domino.h
+ * @file    DominoTile.h
  * @author  Andrés Salinas Lima
  * @date    24/10/2019
- * @brief   Declaración de la clase Domino.
+ * @brief   Declaración de la clase DominoTile.
  */
 
 
-#ifndef DOMINOES_OVER_TCP_DOMINO_H
-#define DOMINOES_OVER_TCP_DOMINO_H
+#ifndef DOMINOES_OVER_TCP_DOMINOTILE_H
+#define DOMINOES_OVER_TCP_DOMINOTILE_H
 
 
 #include <iostream>
@@ -19,16 +19,16 @@ using namespace std;
 
 
 /**
- * @class Domino: Representa una ficha del dominó.
+ * @class DominoTile: Representa una ficha del dominó.
  */
-class Domino {
+class DominoTile {
 public:
     /**
      * Constructor: crea una nueva ficha de dominó a partir de los valores para
      * el lado derecho y el izquierdo introducidos.
      */
-    inline Domino(unsigned short left, unsigned short right) : left(left),
-                                                               right(right) {}
+    inline DominoTile(unsigned short left, unsigned short right) : left(left),
+                                                                   right(right) {}
 
     /**
      * Devuelve el valor del lado izquierdo de la ficha.
@@ -41,7 +41,7 @@ public:
      * Establece el valor del lado izquierdo de la ficha.
      */
     inline void setLeft(unsigned short left) {
-        Domino::left = left;
+        DominoTile::left = left;
     }
 
     /**
@@ -55,7 +55,7 @@ public:
      * Establece el valor del lado derecho de la ficha.
      */
     inline void setRight(unsigned short right) {
-        Domino::right = right;
+        DominoTile::right = right;
     }
 
     /**
@@ -72,13 +72,13 @@ private:
 /**
  * Sobrecarga del operador de salida.
  */
-ostream &operator<<(ostream &os, const Domino &d);
+ostream &operator<<(ostream &os, const DominoTile &d);
 
 /**
  * Sobrecarga del operador de entrada.
  * Se lee la ficha teniendo en cuenta el formato |left|right|
  */
-istream &operator>>(istream &stream, Domino &d);
+istream &operator>>(istream &stream, DominoTile &d);
 
 
-#endif //DOMINOES_OVER_TCP_DOMINO_H
+#endif //DOMINOES_OVER_TCP_DOMINOTILE_H

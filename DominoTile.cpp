@@ -1,26 +1,26 @@
 /**
- * @file    Domino.cpp
+ * @file    DominoTile.cpp
  * @author  Andrés Salinas Lima
  * @date    24/10/2019
- * @brief   Código de la clase Domino.
+ * @brief   Código de la clase DominoTile.
  */
 
 
-#include "Domino.h"
+#include "DominoTile.h"
 
 
-void Domino::flip() {
+void DominoTile::flip() {
     unsigned short temp = right;
     right = left;
     left = right;
 }
 
-ostream &operator<<(ostream &os, const Domino &d) {
+ostream &operator<<(ostream &os, const DominoTile &d) {
     os << "|" << d.getLeft() << "|" << d.getRight() << "|";
     return os;
 }
 
-istream &operator>>(istream &stream, Domino &d) {
+istream &operator>>(istream &stream, DominoTile &d) {
     string temp;
 
     getline(stream, temp, '|');
