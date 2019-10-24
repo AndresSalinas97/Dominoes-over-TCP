@@ -34,12 +34,12 @@ int main(int argc, char **argv) {
         cerr << "Uso del programa: " << argv[0] << " direcciónIPServidor" << endl;
         exit(EXIT_FAILURE);
     }
-    char *serverIPAddress = argv[1];
+    char *serverAddress = argv[1];
 
 
     // Abrimos el socket y lo conectamos al servidor
     ClientSocket socket;
-    socket.prepare(serverIPAddress);
+    socket.prepare(serverAddress);
     socketDescriptor = socket.getDescriptor();
 
 
