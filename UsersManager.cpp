@@ -29,7 +29,7 @@ void UsersManager::removeUser(int userSocketD) {
     for (auto user = users.begin(); user != users.end(); user++)
         if (user->getSocketDescriptor() == userSocketD) {
             users.erase(user);
-            break;
+            return;
         }
 }
 
