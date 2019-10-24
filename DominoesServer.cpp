@@ -326,9 +326,14 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
         //return; // TODO: Descomentar (durante las pruebas permitimos jugar sin iniciar sesión)
     }
 
+    if (user->isWaiting()) {
+        sendMessage(clientSocketD, "-ERR. Ya estás en la lista de espera");
+        return;
+    }
+
     // Comprobamos si hay otros usuarios esperando para jugar
     for (auto &opponent : usersManager.getUsers())
-        if (opponent.isWaiting()) {
+        if (opponent.isWaiting() && opponent.getSocketDescriptor() != clientSocketD) {
             // Hemos encontrado un oponente
 
             // Creamos el tablero
@@ -446,7 +451,8 @@ void DominoesServer::sendHelp(int clientSocketD) {
     }
 
     if (user.isPlaying()) {
-        sendMessage(clientSocketD, "\tCOLOCAR-FICHA |valor1|valor2|,extremo\n"
+        sendMessage(clientSocketD, "\tCOLOCAR-FICHA |valor1|valor2|,extremo"
+                                   "(derecha/izquierda)\n"
                                    "\tPASO-TURNO\n"
                                    "\tROBAR-FICHA\n");
     }
