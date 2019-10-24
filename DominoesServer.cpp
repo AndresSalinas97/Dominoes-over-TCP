@@ -388,6 +388,11 @@ void DominoesServer::handleColocarFichaCommand(int clientSocketD,
         return;
     }
 
+    if (!user.isMyTurn()) {
+        sendMessage(clientSocketD, "-ERR. No es tu turno");
+        return;
+    }
+
     // TODO
     sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
 }
@@ -400,6 +405,11 @@ void DominoesServer::handlePasoTurnoCommand(int clientSocketD) {
         return;
     }
 
+    if (!user.isMyTurn()) {
+        sendMessage(clientSocketD, "-ERR. No es tu turno");
+        return;
+    }
+
     // TODO
     sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
 }
@@ -409,6 +419,11 @@ void DominoesServer::handleRobarFichaCommand(int clientSocketD) {
 
     if (!user.isPlaying()) {
         sendMessage(clientSocketD, "-ERR. Todavía no estás jugando");
+        return;
+    }
+
+    if (!user.isMyTurn()) {
+        sendMessage(clientSocketD, "-ERR. No es tu turno");
         return;
     }
 
