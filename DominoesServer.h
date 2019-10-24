@@ -19,7 +19,7 @@
 #include <list>
 
 
-using std::string;
+using namespace std;
 
 
 /**

@@ -13,11 +13,7 @@
 #include <sstream>
 
 
-using std::ifstream;
-using std::ofstream;
-using std::endl;
-using std::cerr;
-using std::vector;
+using namespace std;
 
 
 void UsersManager::addUser(int userSocketD) {

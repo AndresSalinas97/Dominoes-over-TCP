@@ -19,10 +19,7 @@
 #include <unistd.h>
 
 
-using std::cout;
-using std::cerr;
-using std::cin;
-using std::endl;
+using namespace std;
 
 
 int socketDescriptor; // Para poderlo usar en signalHandler()

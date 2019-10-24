@@ -18,8 +18,7 @@
 #include <arpa/inet.h>
 
 
-using std::cerr;
-using std::endl;
+using namespace std;
 
 void ClientSocket::prepare(const char *serverIPAddress) {
     // Se rellenan los campos de la estructura de la dirección del servidor

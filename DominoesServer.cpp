@@ -20,12 +20,7 @@
 #include <netinet/in.h>
 
 
-using std::cout;
-using std::cin;
-using std::cerr;
-using std::endl;
-using std::string;
-using std::vector;
+using namespace std;
 
 
 void DominoesServer::start() {

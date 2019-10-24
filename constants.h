@@ -13,7 +13,7 @@
 #include <string>
 
 
-using std::string;
+using namespace std;
 
 
 #define SERVER_PORT 2050 // Puerto en el que el servidor acepta el servicio

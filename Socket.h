@@ -17,8 +17,7 @@
 #include <sys/socket.h>
 
 
-using std::cerr;
-using std::endl;
+using namespace std;
 
 
 /**

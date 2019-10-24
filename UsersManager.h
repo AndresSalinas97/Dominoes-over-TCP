@@ -16,7 +16,7 @@
 #include <list>
 
 
-using std::list;
+using namespace std;
 
 
 /**
