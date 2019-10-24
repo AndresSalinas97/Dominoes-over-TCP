@@ -44,9 +44,16 @@ public:
     const User &getUser(int userSocketD) const;
 
     /**
+     * Devuelve un puntero al usuario con el descriptor de socket especificado.
+     * @warning Si no existiera ningún usuario con ese descriptor de socket se
+     * devuelve nullptr.
+     */
+    User *getUserPtr(int userSocketD);
+
+    /**
      * Devuelve la lista de usuarios (como const).
      */
-    inline const list<User> &getUsers() const {
+    inline list<User> &getUsers() {
         return users;
     }
 
@@ -94,13 +101,6 @@ private:
     list<User> users; // Lista de usuarios conectados
     const string usersFilePath = USERS_FILE_PATH; // Path del fichero donde se
     // almacenan los usuarios y contraseñas en TEXTO PLANO (separado por comas).
-
-    /**
-     * Devuelve un puntero al usuario con el descriptor de socket especificado.
-     * @warning Si no existiera ningún usuario con ese descriptor de socket se
-     * devuelve nullptr.
-     */
-    User *getUserPtr(int userSocketD);
 
     /**
      * Devuelve true si el fichero de usuarios existe.

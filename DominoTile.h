@@ -27,8 +27,8 @@ public:
      * Constructor: crea una nueva ficha de dominó a partir de los valores para
      * el lado derecho y el izquierdo introducidos.
      */
-    inline DominoTile(unsigned short left, unsigned short right) : left(left),
-                                                                   right(right) {}
+    inline DominoTile(unsigned short left, unsigned short right)
+            : left(left), right(right) {}
 
     /**
      * Devuelve el valor del lado izquierdo de la ficha.

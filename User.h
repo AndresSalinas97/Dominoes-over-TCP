@@ -10,6 +10,7 @@
 
 
 #include <string>
+#include "DominoesBoard.h"
 
 
 using namespace std;
@@ -24,14 +25,7 @@ public:
      * Constructor: Crea un nuevo usuario con el descriptor de socket pasado
      * como argumento y con todos los booleanos inicializados a false.
      */
-    inline explicit User(int socketDescriptor) :
-            username(""),
-            usernameLogged(false),
-            passwordLogged(false),
-            waiting(false),
-            playing(false) {
-        this->socketDescriptor = socketDescriptor;
-    }
+    inline explicit User(int socketDescriptor) : socketDescriptor(socketDescriptor) {}
 
     /**
      * Devuelve el descriptor del socket en el que se conectó el usuario.
@@ -110,15 +104,70 @@ public:
         User::playing = playing;
     }
 
+    /**
+     * Devuelve una referencia a la lista de fichas del usuario.
+     */
+    inline list <DominoTile> &getDominoTiles() {
+        return dominoTiles;
+    }
+
+    /**
+     * Devuelve el puntero al tablero de Dominó en el que el usuario está jugando.
+     */
+    inline DominoesBoard *getDominoesBoard() const {
+        return dominoesBoard;
+    }
+
+    /**
+     * Establece el puntero al tablero de Dominó en el que el usuario está jugando.
+     */
+    inline void setDominoesBoard(DominoesBoard *dominoesBoard) {
+        User::dominoesBoard = dominoesBoard;
+    }
+
+    /**
+     * Devuelve el puntero al usuario contra el que este usuario está jugando.
+     */
+    inline User *getOpponent() const {
+        return opponent;
+    }
+
+    /**
+     * Establece el puntero al usuario contra el que este usuario está jugando.
+     */
+    inline void setOpponent(User *opponent) {
+        User::opponent = opponent;
+    }
+
+    /**
+     * Indica si es el turno de este usuario.
+     */
+    inline bool isMyTurn() const {
+        return myTurn;
+    }
+
+    /**
+     * Establece si es el turno de este usuario.
+     */
+    inline void setMyTurn(bool myTurn) {
+        User::myTurn = myTurn;
+    }
 
 private:
-    int socketDescriptor; // Descriptor del socket en el que se conectó el usuario.
-    string username;      // Nombre de usuario.
-    bool usernameLogged;  // Indica si el usuario ha introducido su username correctamente.
-    bool passwordLogged;  // Indica si el usuario ha introducido su contraseña correctamente.
-    bool waiting;         // Indica si el usuario está buscando partida.
-    bool playing;         // Indica si el usuario está jugando.
-    // TODO: Puntero al tablero de Dominó en el que el usuario está jugando
+    int socketDescriptor;        // Descriptor del socket en el que se conectó
+    // el usuario.
+    string username = "";        // Nombre de usuario.
+    bool usernameLogged = false; // Indica si el usuario ha introducido su
+    // username correctamente
+    bool passwordLogged = false; // Indica si el usuario ha introducido su
+    // contraseña correctamente
+    bool waiting = false;        // Indica si el usuario está buscando partida
+    bool playing = false;        // Indica si el usuario está jugando
+    bool myTurn = false;         // Indica si es el turno del usuario
+    list <DominoTile> dominoTiles;          // Fichas de dominó del jugador
+    DominoesBoard *dominoesBoard = nullptr; // Puntero al tablero de dominó en el
+    // que el usuario está jugando
+    User *opponent = nullptr;               // Puntero al jugador oponente
 };
 
 

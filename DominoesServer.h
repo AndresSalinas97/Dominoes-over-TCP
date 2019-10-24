@@ -45,9 +45,10 @@ public:
     void end();
 
 private:
-    Socket serverSocket;       // Objeto Socket del servidor
-    fd_set readFDS{};          // Set de descriptores para la función select()
-    UsersManager usersManager; // Mánager de usuarios
+    Socket serverSocket;                // Objeto Socket del servidor
+    fd_set readFDS{};                   // Set de descriptores para la función select()
+    UsersManager usersManager;          // Mánager de usuarios
+    list<DominoesBoard> dominoesBoards; // Tableros de dominó donde los usuarios juegan
 
     /**
      * Envía el mensaje introducido al cliente con el socketD introducido.

@@ -18,6 +18,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <string>
 
 
 using namespace std;
@@ -318,15 +319,64 @@ void DominoesServer::handleRegistroCommand(int clientSocketD, const string &user
 }
 
 void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
-    User user = usersManager.getUser(clientSocketD);
+    User *user = usersManager.getUserPtr(clientSocketD);
 
-    if (!user.isPasswordLogged()) {
+    if (!user->isPasswordLogged()) {
         sendMessage(clientSocketD, "-ERR. Todavía no has iniciado sesión");
-        return;
+        //return; // TODO: Descomentar (durante las pruebas permitimos jugar sin iniciar sesión)
     }
 
-    // TODO
-    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
+    // Comprobamos si hay otros usuarios esperando para jugar
+    for (auto &opponent : usersManager.getUsers())
+        if (opponent.isWaiting()) {
+            // Hemos encontrado un oponente
+
+            // Creamos el tablero
+            dominoesBoards.push_back(*(new DominoesBoard));
+            DominoesBoard *board = &dominoesBoards.back();
+
+            // Actualizamos el estado del usuario
+            user->setDominoesBoard(board);
+            user->setOpponent(&opponent);
+            user->setPlaying(true);
+
+            // Actualizamos el estado del oponente
+            opponent.setDominoesBoard(board);
+            opponent.setOpponent(user);
+            opponent.setPlaying(true);
+            opponent.setWaiting(false);
+
+            // Notificamos a ambos
+            sendMessage(clientSocketD, "+OK. Empieza la partida");
+            sendMessage(opponent.getSocketDescriptor(), "+OK. Empieza la partida");
+
+            // Repartimos las fichas
+            board->shuffle(user->getDominoTiles(), opponent.getDominoTiles());
+
+            // Mostramos las fichas a cada jugador
+            ostringstream os;
+            os << "FICHAS ";
+            for (auto &dominoTile : user->getDominoTiles())
+                os << dominoTile;
+            sendMessage(clientSocketD, os.str().c_str());
+
+            os.str("");
+            os.clear();
+            os << "FICHAS ";
+            for (auto &dominoTile : opponent.getDominoTiles())
+                os << dominoTile;
+            sendMessage(opponent.getSocketDescriptor(), os.str().c_str());
+
+            // TODO: Decidir turno de partida
+            // TODO: Crear función estática en DominoesBoard para esto
+
+            return;
+        }
+
+    // Si no encontramos un oponente nos quedamos a la espera
+    user->setWaiting(true);
+    sendMessage(clientSocketD, "+OK. Petición recibida. Quedamos a la espera de "
+                               "más jugadores");
 }
 
 void DominoesServer::handleColocarFichaCommand(int clientSocketD,
