@@ -38,3 +38,37 @@ void DominoesBoard::shuffle(list<DominoTile> &player1Tiles,
     for (int i = 14; i < 28; i++)
         sleepingTiles.push_back(temp[i]);
 }
+
+
+int DominoesBoard::getDominoTileScore(const DominoTile &dominoTile) {
+    if (dominoTile.getLeft() == dominoTile.getRight())
+        return dominoTile.getLeft() + dominoTile.getRight() + 100;
+    else
+        return dominoTile.getLeft() + dominoTile.getRight();
+}
+
+const DominoTile &DominoesBoard::getBestDominoTile(const list<DominoTile> &dominoes) {
+    const DominoTile *bestTile = nullptr;
+    int bestScore = 0;
+    int score;
+
+    for (auto &domino : dominoes) {
+        score = getDominoTileScore(domino);
+        if (score > bestScore) {
+            bestScore = score;
+            bestTile = &domino;
+        }
+    }
+
+    return *bestTile;
+}
+
+User *DominoesBoard::whoStarts(User *player1, User *player2) {
+    DominoTile bestPlayer1Tile = getBestDominoTile(player1->getDominoTiles());
+    DominoTile bestPlayer2Tile = getBestDominoTile(player2->getDominoTiles());
+
+    if (getDominoTileScore(bestPlayer1Tile) > getDominoTileScore(bestPlayer2Tile))
+        return player1;
+    else
+        return player2;
+}

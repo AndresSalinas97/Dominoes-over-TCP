@@ -263,7 +263,7 @@ void DominoesServer::printStats() const {
     cout << "\t* ESTADÍSTICAS *" << endl;
 
     cout << "\t\tClientes conectados: " << usersManager.getNUsers() << endl;
-    cout << "\t\tPartidas en curso: " << "?" << endl; // TODO
+    cout << "\t\tPartidas en curso: " << dominoesBoards.size() << endl;
     cout << "\t\tClientes registrados: " << usersManager.getNRegisteredUsers() << endl;
 }
 
@@ -337,6 +337,12 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
         return;
     }
 
+    if (dominoesBoards.size() >= MAX_DOMINOES) {
+        sendMessage(clientSocketD, "-ERR. Se ha superado el número máximo de "
+                                   "partidas");
+        return;
+    }
+
     // Comprobamos si hay otros usuarios esperando para jugar
     for (auto &opponent : usersManager.getUsers())
         if (opponent.isWaiting() && opponent.getSocketDescriptor() != clientSocketD) {
@@ -370,7 +376,6 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
             for (auto &dominoTile : user->getDominoTiles())
                 os << dominoTile;
             sendMessage(clientSocketD, os.str().c_str());
-
             os.str("");
             os.clear();
             os << "FICHAS ";
@@ -378,8 +383,10 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
                 os << dominoTile;
             sendMessage(opponent.getSocketDescriptor(), os.str().c_str());
 
-            // TODO: Decidir turno de partida
-            // TODO: Crear función estática en DominoesBoard para esto
+            // Averiguamos que jugador empieza la partida
+            User *firstPlayer = DominoesBoard::whoStarts(user, &opponent);
+            firstPlayer->setMyTurn(true);
+            sendMessage(firstPlayer->getSocketDescriptor(), "+OK. Turno de partida");
 
             return;
         }
@@ -405,6 +412,8 @@ void DominoesServer::handleColocarFichaCommand(int clientSocketD,
     }
 
     // TODO
+    // TODO: Si es la primera ficha controlar que el usuario coloque su mejor ficha
+    // TODO: Comprobar si el jugador ha ganado y si no pasarle el turno al oponente
     sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
 }
 
@@ -456,7 +465,7 @@ void DominoesServer::sendHelp(int clientSocketD) {
         sendMessage(clientSocketD, "\tINICIAR-PARTIDA");
     }
 
-    if (user.isPlaying()) {
+    if (user.isMyTurn()) {
         sendMessage(clientSocketD, "\tCOLOCAR-FICHA |valor1|valor2|,extremo"
                                    "(derecha/izquierda)\n"
                                    "\tPASO-TURNO\n"
@@ -464,7 +473,7 @@ void DominoesServer::sendHelp(int clientSocketD) {
     }
 
     sendMessage(clientSocketD, "\tAYUDA\n"
-                               "\tSALIR\n");
+                               "\tSALIR");
 }
 
 void DominoesServer::handleSalirCommand(int clientSocketD) {

@@ -9,8 +9,13 @@
 #define DOMINOES_OVER_TCP_USER_H
 
 
-#include <string>
+class DominoesBoard; // Para evitar error con clases que se referencian entre sí
+
 #include "DominoesBoard.h"
+#include "DominoTile.h"
+
+#include <string>
+#include <list>
 
 
 using namespace std;
