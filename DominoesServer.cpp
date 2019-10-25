@@ -348,6 +348,8 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
         if (opponent.isWaiting() && opponent.getSocketDescriptor() != clientSocketD) {
             // Hemos encontrado un oponente
 
+            ostringstream os;
+
             // Creamos el tablero
             dominoesBoards.push_back(*(new DominoesBoard));
             DominoesBoard *board = &dominoesBoards.back();
@@ -365,13 +367,24 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
 
             // Notificamos a ambos
             sendMessage(clientSocketD, "+OK. Empieza la partida");
+            os.str("");
+            os.clear();
+            os << "+INFO. Jugarás contra " << opponent.getUsername();
+            sendMessage(clientSocketD, os.str().c_str());
             sendMessage(opponent.getSocketDescriptor(), "+OK. Empieza la partida");
+            os.str("");
+            os.clear();
+            os << "+INFO. Jugarás contra " << user->getUsername();
+            sendMessage(opponent.getSocketDescriptor(), os.str().c_str());
+
+
 
             // Repartimos las fichas
             board->shuffle(user->getDominoTiles(), opponent.getDominoTiles());
 
             // Mostramos las fichas a cada jugador
-            ostringstream os;
+            os.str("");
+            os.clear();
             os << "FICHAS ";
             for (auto &dominoTile : user->getDominoTiles())
                 os << dominoTile;
