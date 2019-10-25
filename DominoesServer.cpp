@@ -409,7 +409,10 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
             // Averiguamos que jugador empieza la partida
             User *firstPlayer = DominoesBoard::whoStarts(user, &opponent);
             firstPlayer->setMyTurn(true);
-            sendMessage(firstPlayer->getSocketDescriptor(), "+OK. Turno de partida");
+            sendMessage(firstPlayer->getSocketDescriptor(),
+                        "+INFO. Tienes la mejor ficha");
+            sendMessage(firstPlayer->getSocketDescriptor(),
+                        "+OK. Turno de partida");
 
             return;
         }
@@ -436,7 +439,7 @@ void DominoesServer::handleColocarFichaCommand(int clientSocketD,
 
     // TODO
     // TODO: Si es la primera ficha controlar que el usuario coloque su mejor ficha
-    // TODO: Comprobar si el jugador ha ganado y si no pasarle el turno al oponente
+    // TODO: Después de colocar comprobar si tenemos ganador (un jugador se queda sin fichas o ningún jugador puede colocar y ya no quedan más sleepingTiles.
     sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
 }
 
