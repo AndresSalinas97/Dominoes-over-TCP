@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
                 cout << "\t* El servidor ha terminado la conexión *" << endl;
                 end = true;
             } else {
-                cout << receivedMessage  << endl;
+                cout << receivedMessage;
 
                 if (strcmp(receivedMessage, "-ERR. Se ha superado el número de "
                                             "usuarios conectados") == 0)

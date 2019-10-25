@@ -107,6 +107,9 @@ void DominoesServer::sendMessage(int destinationSocketD, const char *message) {
     bzero(sentMessage, sizeof(sentMessage));
     strcpy(sentMessage, message);
 
+    // Añadimos un \n al final del mensaje enviado
+    strcat(sentMessage, "\n");
+
     if ((send(destinationSocketD, sentMessage, strlen(sentMessage), 0)) < 0)
         cerr << "Error al enviar mensaje al cliente " << destinationSocketD
              << ": " << strerror(errno) << endl;
@@ -440,21 +443,21 @@ void DominoesServer::sendHelp(int clientSocketD) {
     // Obtenemos el cliente para mostrar ayuda contextual
     User user = usersManager.getUser(clientSocketD);
 
-    sendMessage(clientSocketD, "*INFO. Comandos disponibles para su estado actual:\n");
+    sendMessage(clientSocketD, "*INFO. Comandos disponibles para su estado actual:");
 
     if (!user.isPasswordLogged()) {
         sendMessage(clientSocketD, "\tUSUARIO nombreDeUsuario\n"
                                    "\tPASSWORD contraseña\n"
-                                   "\tREGISTRO -u nombreDeUsuario -p contraseña\n");
+                                   "\tREGISTRO -u nombreDeUsuario -p contraseña");
     } else {
-        sendMessage(clientSocketD, "\tINICIAR-PARTIDA\n");
+        sendMessage(clientSocketD, "\tINICIAR-PARTIDA");
     }
 
     if (user.isPlaying()) {
         sendMessage(clientSocketD, "\tCOLOCAR-FICHA |valor1|valor2|,extremo"
                                    "(derecha/izquierda)\n"
                                    "\tPASO-TURNO\n"
-                                   "\tROBAR-FICHA\n");
+                                   "\tROBAR-FICHA");
     }
 
     sendMessage(clientSocketD, "\tAYUDA\n"
