@@ -39,9 +39,9 @@ private:
 
     /**
      * Devuelve la "puntuación" de la ficha de dominó introducida.
-     * Es un método para saber que ficha es mejor.
-     * Esta "puntuación" será valorIzquierda + valorDerecha para fichas normales
-     * y valorIzquierda + valorDerecha + 100 para fichas dobles.
+     * Es mi método para saber que ficha es mejor.
+     * Dará como resultado: |6|6| > |5|5| > ... > |0|0| > |6|5| > |6|4| > ...
+     * > |6|0| > |5|4| > ...
      */
     static int getDominoTileScore(const DominoTile &dominoTile);
 };

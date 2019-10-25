@@ -41,10 +41,20 @@ void DominoesBoard::shuffle(list<DominoTile> &player1Tiles,
 
 
 int DominoesBoard::getDominoTileScore(const DominoTile &dominoTile) {
-    if (dominoTile.getLeft() == dominoTile.getRight())
-        return dominoTile.getLeft() + dominoTile.getRight() + 100;
-    else
-        return dominoTile.getLeft() + dominoTile.getRight();
+    if (dominoTile.getLeft() == dominoTile.getRight()) {
+        return dominoTile.getLeft() + 1000;
+    } else {
+        if (dominoTile.getLeft() > dominoTile.getRight())
+            return dominoTile.getLeft() * 100 + dominoTile.getRight();
+        else
+            return dominoTile.getLeft() + dominoTile.getRight() * 100;
+    }
+
+    /**
+     * De esta manera las fichas dobles siempre van a tener mejor puntuación.
+     * De esta manera fichas como |6|0| (puntuación = 600) tendrán mejor que,
+     * por ejemplo |4|5| (puntuación = 504).
+     */
 }
 
 const DominoTile &DominoesBoard::getBestDominoTile(const list<DominoTile> &dominoes) {
