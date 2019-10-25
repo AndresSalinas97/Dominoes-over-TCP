@@ -145,8 +145,11 @@ void DominoesServer::handleNewClient() {
     } else {
         // Comprobamos que no hayamos superado el número máximo de clientes conectados
         if (usersManager.getNUsers() >= MAX_CLIENTS) {
-            sendMessage(newClientSocketD, "-ERR. Se ha superado el número de "
-                                          "usuarios conectados");
+            sendMessage(newClientSocketD, "-ERR. Se ha superado el número máximo"
+                                          " de usuarios conectados");
+            close(newClientSocketD);
+            cout << "\t* Cliente rechazado en socket " << newClientSocketD
+                 << " *" << endl;
         } else {
             // Tenemos un nuevo cliente
 

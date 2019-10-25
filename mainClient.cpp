@@ -85,8 +85,8 @@ int main(int argc, char **argv) {
             } else {
                 cout << receivedMessage;
 
-                if (strcmp(receivedMessage, "-ERR. Se ha superado el número de "
-                                            "usuarios conectados") == 0)
+                if (strcmp(receivedMessage, "-ERR. Se ha superado el número máximo"
+                                            " de usuarios conectados\n") == 0)
                     end = true;
             }
         } else if (FD_ISSET(0, &auxFDS)) {
