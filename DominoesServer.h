@@ -79,6 +79,11 @@ private:
     void removeClient(int goneClientSocketD);
 
     /**
+     * Elimina el tablero introducido de la lista de tableros.
+     */
+    void removeDominoesBoard(DominoesBoard *dominoesBoard);
+
+    /**
      * Acciones a realizar cuando se recibe un mensaje de un cliente.
      */
     void handleClientCommunication(int clientSocketD, const string &receivedMessage);

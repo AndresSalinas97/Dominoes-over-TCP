@@ -13,7 +13,6 @@
 #include <cstring>
 #include <vector>
 #include <iterator>
-#include <sstream>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -174,7 +173,24 @@ void DominoesServer::handleGoneClient(int goneClientSocketD) {
 }
 
 void DominoesServer::removeClient(int goneClientSocketD) {
-    // TODO: Si el cliente estaba jugando, notificar a su oponente, poner a su oponente en not playing y eliminar la partida
+    User goneUser = usersManager.getUser(goneClientSocketD);
+
+    // Si el usuario estaba jugando
+    if (goneUser.isPlaying()) {
+        // Sacamos al oponente de la partida
+        goneUser.getOpponent()->setMyTurn(false);
+        goneUser.getOpponent()->setPlaying(false);
+        goneUser.getOpponent()->getDominoTiles().clear();
+        goneUser.getOpponent()->setOpponent(nullptr);
+        goneUser.getOpponent()->setDominoesBoard(nullptr);
+
+        // Notificamos al oponente
+        sendMessage(goneUser.getOpponent()->getSocketDescriptor(),
+                    "+OK. La partida ha sida anulada");
+
+        // Eliminamos el tablero de dominó
+        removeDominoesBoard(goneUser.getDominoesBoard());
+    }
 
     // Se elimina de la lista de clientes
     usersManager.removeUser(goneClientSocketD);
@@ -184,6 +200,15 @@ void DominoesServer::removeClient(int goneClientSocketD) {
 
     // Se elimina su socket de readFDS
     FD_CLR(goneClientSocketD, &readFDS);
+}
+
+void DominoesServer::removeDominoesBoard(DominoesBoard *dominoesBoard) {
+    for (auto it = dominoesBoards.begin(); it != dominoesBoards.end(); it++) {
+        if (dominoesBoard == &*it) {
+            dominoesBoards.erase(it);
+            return;
+        }
+    }
 }
 
 void DominoesServer::handleClientCommunication(int clientSocketD,
@@ -348,8 +373,6 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
         if (opponent.isWaiting() && opponent.getSocketDescriptor() != clientSocketD) {
             // Hemos encontrado un oponente
 
-            ostringstream os;
-
             // Creamos el tablero
             dominoesBoards.push_back(*(new DominoesBoard));
             DominoesBoard *board = &dominoesBoards.back();
@@ -376,8 +399,6 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
             os.clear();
             os << "+INFO. Jugarás contra " << user->getUsername();
             sendMessage(opponent.getSocketDescriptor(), os.str().c_str());
-
-
 
             // Repartimos las fichas
             board->shuffle(user->getDominoTiles(), opponent.getDominoTiles());
@@ -474,7 +495,7 @@ void DominoesServer::sendHelp(int clientSocketD) {
         sendMessage(clientSocketD, "\tUSUARIO nombreDeUsuario\n"
                                    "\tPASSWORD contraseña\n"
                                    "\tREGISTRO -u nombreDeUsuario -p contraseña");
-    } else {
+    } else if (!user.isWaiting()) {
         sendMessage(clientSocketD, "\tINICIAR-PARTIDA");
     }
 
