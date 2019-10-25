@@ -142,6 +142,11 @@ private:
     void sendHelp(int clientSocketD);
 
     /**
+     * Envía al usuario especificado sus fichas.
+     */
+    void sendTiles(User &user);
+
+    /**
      * Acciones a realizar cuando un cliente envía el comando SALIR
      */
     void handleSalirCommand(int clientSocketD);
