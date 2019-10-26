@@ -555,6 +555,9 @@ void DominoesServer::handleColocarFichaCommand(int clientSocketD,
         opponent->setOpponent(nullptr);
         opponent->setDominoesBoard(nullptr);
 
+        // Eliminamos el tablero de la lista de tableros
+        removeDominoesBoard(dominoesBoard);
+
         return;
     }
 
