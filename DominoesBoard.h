@@ -45,7 +45,7 @@ public:
 
     unsigned short getRightValue() const;
 
-    bool canPlayerPlay(const list<DominoTile> &dominoTiles);
+    bool canPlayerPlay(User &user);
 
     bool placeTileCenter(const DominoTile &dominoTile);
 
@@ -56,6 +56,8 @@ public:
     inline const list<DominoTile> &getBoardTiles() const {
         return boardTiles;
     }
+
+    bool checkWinner(User *player1, User *player2, User *winner);
 
 private:
     list<DominoTile> sleepingTiles;

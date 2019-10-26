@@ -83,11 +83,11 @@ User *DominoesBoard::whoStarts(User *player1, User *player2) {
         return player2;
 }
 
-bool DominoesBoard::canPlayerPlay(const list<DominoTile> &dominoTiles) {
+bool DominoesBoard::canPlayerPlay(User &user) {
     if (boardIsEmpty())
         return true;
 
-    for (auto &dominoTile : dominoTiles)
+    for (auto &dominoTile : user.getDominoTiles())
         if (dominoTile.has(getLeftValue()) || dominoTile.has(getRightValue()))
             return true;
 
@@ -149,6 +149,34 @@ bool DominoesBoard::placeTileRight(const DominoTile &dominoTile) {
         DominoTile temp = dominoTile;
         temp.flip();
         boardTiles.push_back(temp);
+        return true;
+    }
+
+    return false;
+}
+
+bool DominoesBoard::checkWinner(User *player1, User *player2, User *winner) {
+    // El jugador 1 coloca todas sus fichas
+    if (player1->getDominoTiles().empty()) {
+        winner = player1;
+        return true;
+    }
+
+    // El jugador 2 coloca todas sus fichas
+    if (player2->getDominoTiles().empty()) {
+        winner = player2;
+        return true;
+    }
+
+    // Partida cerrada: Ningún jugador puede continuar la partida y no quedan
+    // fichas para robar
+    if (!canPlayerPlay(*player1) && !canPlayerPlay(*player2) && sleepingTilesIsEmpty()) {
+        if (player1->getDominoTiles().size() < player2->getDominoTiles().size())
+            winner = player1;
+        else if (player1->getDominoTiles().size() > player2->getDominoTiles().size())
+            winner = player2;
+        else
+            winner = nullptr; // Empate
         return true;
     }
 

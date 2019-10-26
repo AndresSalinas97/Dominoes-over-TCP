@@ -213,8 +213,6 @@ void DominoesServer::removeDominoesBoard(DominoesBoard *dominoesBoard) {
 
 void DominoesServer::handleClientCommunication(int clientSocketD,
                                                const string &receivedMessage) {
-    cout << "Socket " << clientSocketD << ": \"" << receivedMessage << "\"" << endl; // TODO: eliminar
-
     // Separamos receivedMessage en palabras
     std::istringstream iss(receivedMessage);
     vector<string> tokens{std::istream_iterator<string>{iss},
@@ -382,15 +380,15 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
 
             // Creamos el tablero
             dominoesBoards.push_back(*(new DominoesBoard));
-            DominoesBoard *board = &dominoesBoards.back();
+            DominoesBoard *dominoesBoard = &dominoesBoards.back();
 
             // Actualizamos el estado del usuario
-            user->setDominoesBoard(board);
+            user->setDominoesBoard(dominoesBoard);
             user->setOpponent(&opponent);
             user->setPlaying(true);
 
             // Actualizamos el estado del oponente
-            opponent.setDominoesBoard(board);
+            opponent.setDominoesBoard(dominoesBoard);
             opponent.setOpponent(user);
             opponent.setPlaying(true);
             opponent.setWaiting(false);
@@ -406,7 +404,7 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
             sendMessage(opponent.getSocketDescriptor(), os.str().c_str());
 
             // Repartimos las fichas
-            board->shuffle(user->getDominoTiles(), opponent.getDominoTiles());
+            dominoesBoard->shuffle(user->getDominoTiles(), opponent.getDominoTiles());
 
             // Mostramos las fichas a cada jugador
             sendTiles(*user);
@@ -415,7 +413,8 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
             // El jugador con la mejor ficha empieza la partida y esta ficha se
             // coloca automáticamente
             User *firstPlayer = DominoesBoard::whoStarts(user, &opponent);
-            DominoTile bestTile = DominoesBoard::getBestDominoTile(firstPlayer->getDominoTiles());
+            DominoTile bestTile = DominoesBoard::getBestDominoTile(
+                    firstPlayer->getDominoTiles());
 
             sendMessage(firstPlayer->getSocketDescriptor(),
                         "+OK. Turno de partida");
@@ -428,15 +427,18 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
             os << "COLOCAR-FICHA " << bestTile;
             sendMessage(firstPlayer->getSocketDescriptor(), os.str().c_str());
 
+            // Colocamos la ficha
             firstPlayer->getDominoesBoard()->placeTileCenter(bestTile);
 
             // Eliminamos la ficha que el jugador acaba de colocar
-            for (auto it = firstPlayer->getDominoTiles().begin(); it != firstPlayer->getDominoTiles().end(); it++)
+            for (auto it = firstPlayer->getDominoTiles().begin();
+                 it != firstPlayer->getDominoTiles().end(); it++)
                 if (*it == bestTile) {
                     firstPlayer->getDominoTiles().erase(it);
                     break;
                 }
 
+            // Mandamos el tablero recién modificado a ambos jugadores
             sendBoard(*firstPlayer);
             sendBoard(*firstPlayer->getOpponent());
 
@@ -457,22 +459,108 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
 
 void DominoesServer::handleColocarFichaCommand(int clientSocketD,
                                                const string &dominoAndSide) {
-    User user = usersManager.getUser(clientSocketD);
+    User *user = usersManager.getUserPtr(clientSocketD);
+    DominoesBoard *dominoesBoard = user->getDominoesBoard();
+    User *opponent = user->getOpponent();
 
-    if (!user.isPlaying()) {
+    if (!user->isPlaying()) {
         sendMessage(clientSocketD, "-ERR. Todavía no estás jugando");
         return;
     }
 
-    if (!user.isMyTurn()) {
+    if (!user->isMyTurn()) {
         sendMessage(clientSocketD, "-ERR. No es tu turno");
         return;
     }
 
-    // TODO
-    // TODO: Si es la primera ficha controlar que el usuario coloque su mejor ficha
-    // TODO: Después de colocar comprobar si tenemos ganador (un jugador se queda sin fichas o ningún jugador puede colocar y ya no quedan más sleepingTiles.
-    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
+    // Leemos la ficha y el extremo
+    DominoTile dominoTile(-1, -1);
+    stringstream ss(dominoAndSide);
+    string side;
+
+    ss >> dominoTile;
+    getline(ss, side, ',');
+    getline(ss, side);
+
+    if (side != "izquierda" && side != "derecha") {
+        sendMessage(clientSocketD, "ERR. Formato no válido");
+        return;
+    }
+
+    // Comprobamos que el jugador realmente tenga la ficha que quiere colocar
+    bool playerHasTheTile = false;
+    for (DominoTile &d : user->getDominoTiles())
+        if (d == dominoTile)
+            playerHasTheTile = true;
+    if (!playerHasTheTile) {
+        sendMessage(clientSocketD, "ERR. No tienes esa ficha");
+        return;
+    }
+
+    // Colocar ficha (incluye comprobación)
+    bool ok;
+    if (side == "izquierda") {
+        ok = dominoesBoard->placeTileLeft(dominoTile);
+    } else {
+        ok = dominoesBoard->placeTileRight(dominoTile);
+    }
+
+    if (!ok) {
+        sendMessage(clientSocketD, "ERR. La ficha no puede ser colocada");
+        return;
+    }
+
+    // Eliminamos la ficha que el jugador acaba de colocar
+    for (auto it = user->getDominoTiles().begin(); it != user->getDominoTiles().end(); it++)
+        if (*it == dominoTile) {
+            user->getDominoTiles().erase(it);
+            break;
+        }
+
+    // Mandamos el tablero recién modificado a ambos jugadores
+    sendBoard(*user);
+    sendBoard(*opponent);
+
+    // Comprobamos si tenemos ganador
+    // TODO: Comprobar que funciona
+    User *winner;
+    if (dominoesBoard->checkWinner(user, opponent, winner)) {
+        // La partida ha terminado
+        if (winner == nullptr) {
+            // Tenemos empate
+            sendMessage(user->getSocketDescriptor(),
+                        "OK. Partida Finalizada. Tenemos un empate");
+            sendMessage(opponent->getSocketDescriptor(),
+                        "OK. Partida Finalizada. Tenemos un empate");
+        } else {
+            // Tenemos ganador
+            ostringstream os;
+            os << "OK. Partida Finalizada. " << winner->getUsername()
+               << " ha ganado la partida";
+            sendMessage(winner->getSocketDescriptor(), os.str().c_str());
+            sendMessage(winner->getOpponent()->getSocketDescriptor(), os.str().c_str());
+        }
+
+        // Terminamos la partida para ambos jugadores
+        user->setMyTurn(false);
+        user->setPlaying(false);
+        user->getDominoTiles().clear();
+        user->setOpponent(nullptr);
+        user->setDominoesBoard(nullptr);
+        opponent->setMyTurn(false);
+        opponent->setPlaying(false);
+        opponent->getDominoTiles().clear();
+        opponent->setOpponent(nullptr);
+        opponent->setDominoesBoard(nullptr);
+
+        return;
+    }
+
+    // Pasamos el turno al oponente
+    user->setMyTurn(false);
+    opponent->setMyTurn(true);
+    sendMessage(opponent->getSocketDescriptor(), "+OK. Turno de partida");
+    sendTiles(*opponent);
 }
 
 void DominoesServer::handlePasoTurnoCommand(int clientSocketD) {
