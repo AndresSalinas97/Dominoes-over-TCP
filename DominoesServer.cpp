@@ -557,20 +557,31 @@ void DominoesServer::handleColocarFichaCommand(int clientSocketD,
 }
 
 void DominoesServer::handlePasoTurnoCommand(int clientSocketD) {
-    User user = usersManager.getUser(clientSocketD);
+    User *user = usersManager.getUserPtr(clientSocketD);
+    User *opponent = user->getOpponent();
 
-    if (!user.isPlaying()) {
+    if (!user->isPlaying()) {
         sendMessage(clientSocketD, "-ERR. Todavía no estás jugando");
         return;
     }
 
-    if (!user.isMyTurn()) {
+    if (!user->isMyTurn()) {
         sendMessage(clientSocketD, "-ERR. No es tu turno");
         return;
     }
 
-    // TODO
-    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
+    if (user->getDominoesBoard()->canPlayerPlay(*user)) {
+        sendMessage(clientSocketD, "-ERR. No es necesario pasar turno");
+        return;
+    }
+
+    // Pasamos el turno al oponente
+    user->setMyTurn(false);
+    opponent->setMyTurn(true);
+
+    // Informamos al oponente
+    sendMessage(opponent->getSocketDescriptor(), "+OK. Turno de partida");
+    sendTiles(*opponent);
 }
 
 void DominoesServer::handleRobarFichaCommand(int clientSocketD) {
