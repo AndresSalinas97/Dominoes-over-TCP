@@ -34,7 +34,7 @@ public:
     static User *whoStarts(User *player1, User *player2);
 
     inline bool isEmpty() const {
-        return tableTiles.empty();
+        return boardTiles.empty();
     }
 
     unsigned short getLeftValue() const;
@@ -43,9 +43,15 @@ public:
 
     bool canPlayerPlay(const list<DominoTile> &dominoTiles);
 
+    bool placeTileCenter(const DominoTile &dominoTile);
+
+    bool placeTileLeft(const DominoTile &dominoTile);
+
+    bool placeTileRight(const DominoTile &dominoTile);
+
 private:
     list<DominoTile> sleepingTiles;
-    list<DominoTile> tableTiles;
+    list<DominoTile> boardTiles;
 
     /**
      * Devuelve la "puntuación" de la ficha de dominó introducida.

@@ -70,6 +70,8 @@ public:
         return (left == v || right == v);
     }
 
+    bool operator==(const DominoTile &dominoTile);
+
 private:
     unsigned short left;  // Valor del lado izquierdo de la ficha.
     unsigned short right; // Valor del lado derecho de la ficha.

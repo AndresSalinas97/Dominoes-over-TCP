@@ -98,12 +98,59 @@ unsigned short DominoesBoard::getLeftValue() const {
     if (isEmpty())
         return -1;
 
-    return tableTiles.begin()->getLeft();
+    return boardTiles.begin()->getLeft();
 }
 
 unsigned short DominoesBoard::getRightValue() const {
     if (isEmpty())
         return -1;
 
-    return tableTiles.back().getRight();
+    return boardTiles.back().getRight();
+}
+
+bool DominoesBoard::placeTileCenter(const DominoTile &dominoTile) {
+    if (!isEmpty())
+        return false;
+
+    boardTiles.push_front(dominoTile);
+
+    return true;
+}
+
+bool DominoesBoard::placeTileLeft(const DominoTile &dominoTile) {
+    if (isEmpty())
+        return false;
+
+    if (dominoTile.getRight() == getLeftValue()) {
+        boardTiles.push_front(dominoTile);
+        return true;
+    }
+
+    if (dominoTile.getLeft() == getLeftValue()) {
+        DominoTile temp = dominoTile;
+        temp.flip();
+        boardTiles.push_front(temp);
+        return true;
+    }
+
+    return false;
+}
+
+bool DominoesBoard::placeTileRight(const DominoTile &dominoTile) {
+    if (isEmpty())
+        return false;
+
+    if (dominoTile.getLeft() == getRightValue()) {
+        boardTiles.push_back(dominoTile);
+        return true;
+    }
+
+    if (dominoTile.getRight() == getRightValue()) {
+        DominoTile temp = dominoTile;
+        temp.flip();
+        boardTiles.push_back(temp);
+        return true;
+    }
+
+    return false;
 }

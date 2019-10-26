@@ -15,6 +15,10 @@ void DominoTile::flip() {
     left = right;
 }
 
+bool DominoTile::operator==(const DominoTile &dominoTile) {
+    return (left == dominoTile.left && right == dominoTile.right);
+}
+
 ostream &operator<<(ostream &os, const DominoTile &d) {
     os << "|" << d.getLeft() << "|" << d.getRight() << "|";
     return os;
