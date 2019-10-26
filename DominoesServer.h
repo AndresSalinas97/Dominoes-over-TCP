@@ -144,17 +144,23 @@ private:
     /**
      * Envía al usuario especificado sus fichas.
      */
-    void sendTiles(User &user);
+    static void sendTiles(User &user);
 
     /**
      * Envía al clientSocketD especificado las fichas del tablero.
      */
-    void sendBoard(User &user);
+    static void sendBoard(User &user);
 
     /**
      * Acciones a realizar cuando un cliente envía el comando SALIR.
      */
     void handleSalirCommand(int clientSocketD);
+
+    /**
+     * Comprueba si hay ganadores, y realiza las acciones necesarias en caso de
+     * que los haya.
+     */
+    bool checkWinners(User *user, User *opponent, DominoesBoard *dominoesBoard);
 };
 
 

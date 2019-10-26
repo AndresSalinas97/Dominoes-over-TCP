@@ -14,7 +14,6 @@
 #include <vector>
 #include <iterator>
 #include <unistd.h>
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string>
@@ -350,7 +349,7 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
 
     if (!user->isPasswordLogged()) {
         sendMessage(clientSocketD, "-ERR. Todavía no has iniciado sesión");
-        //return; // TODO: Descomentar (durante las pruebas permitimos jugar sin iniciar sesión)
+        return;
     }
 
     if (user->isWaiting()) {
@@ -520,34 +519,8 @@ void DominoesServer::handleColocarFichaCommand(int clientSocketD,
     sendBoard(*opponent);
 
     // Comprobamos si tenemos ganador
-    // TODO: Comprobar que funciona
-    User *winner;
-    if (dominoesBoard->checkWinner(user, opponent, winner)) {
-        // La partida ha terminado
-        if (winner == nullptr) {
-            // Tenemos empate
-            sendMessage(user->getSocketDescriptor(),
-                        "OK. Partida Finalizada. Tenemos un empate");
-            sendMessage(opponent->getSocketDescriptor(),
-                        "OK. Partida Finalizada. Tenemos un empate");
-        } else {
-            // Tenemos ganador
-            ostringstream os;
-            os << "OK. Partida Finalizada. " << winner->getUsername()
-               << " ha ganado la partida";
-            sendMessage(winner->getSocketDescriptor(), os.str().c_str());
-            sendMessage(winner->getOpponent()->getSocketDescriptor(), os.str().c_str());
-        }
-
-        // Terminamos la partida para ambos jugadores
-        user->resetLoggedInUserState();
-        opponent->resetLoggedInUserState();
-
-        // Eliminamos el tablero de la lista de tableros
-        removeDominoesBoard(dominoesBoard);
-
+    if (checkWinners(user, opponent, dominoesBoard))
         return;
-    }
 
     // Pasamos el turno al oponente
     user->setMyTurn(false);
@@ -622,6 +595,9 @@ void DominoesServer::handleRobarFichaCommand(int clientSocketD) {
     ostringstream os;
     os << "FICHA " << sleepingTile;
     sendMessage(clientSocketD, os.str().c_str());
+
+    // Comprobamos si tenemos ganador
+    checkWinners(user, user->getOpponent(), dominoesBoard);
 }
 
 void DominoesServer::sendHelp(int clientSocketD) {
@@ -659,7 +635,7 @@ void DominoesServer::sendTiles(User &user) {
 
 void DominoesServer::sendBoard(User &user) {
     ostringstream os;
-    os << "TABLERO: ";
+    os << "TABLERO ";
     for (auto &dominoTile : user.getDominoesBoard()->getBoardTiles())
         os << dominoTile;
     sendMessage(user.getSocketDescriptor(), os.str().c_str());
@@ -672,4 +648,37 @@ void DominoesServer::handleSalirCommand(int clientSocketD) {
     cout << "\t* Cliente abandona en socket " << clientSocketD << " *" << endl;
 
     removeClient(clientSocketD);
+}
+
+bool DominoesServer::checkWinners(User *user, User *opponent, DominoesBoard *dominoesBoard) {
+    // TODO: Comprobar si funciona
+    User *winner;
+    if (dominoesBoard->checkWinner(user, opponent, &winner)) {
+        // La partida ha terminado
+        if (winner == nullptr) {
+            // Tenemos empate
+            sendMessage(user->getSocketDescriptor(),
+                        "OK. Partida Finalizada. Tenemos un empate");
+            sendMessage(opponent->getSocketDescriptor(),
+                        "OK. Partida Finalizada. Tenemos un empate");
+        } else {
+            // Tenemos ganador
+            ostringstream os;
+            os << "OK. Partida Finalizada. " << winner->getUsername()
+               << " ha ganado la partida";
+            sendMessage(winner->getSocketDescriptor(), os.str().c_str());
+            sendMessage(winner->getOpponent()->getSocketDescriptor(), os.str().c_str());
+        }
+
+        // Terminamos la partida para ambos jugadores
+        user->resetLoggedInUserState();
+        opponent->resetLoggedInUserState();
+
+        // Eliminamos el tablero de la lista de tableros
+        removeDominoesBoard(dominoesBoard);
+
+        return true;
+    }
+
+    return false;
 }

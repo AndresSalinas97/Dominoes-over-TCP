@@ -57,7 +57,7 @@ public:
         return boardTiles;
     }
 
-    bool checkWinner(User *player1, User *player2, User *winner);
+    bool checkWinner(User *player1, User *player2, User **winner);
 
     const DominoTile &takeSleepingTile();
 
