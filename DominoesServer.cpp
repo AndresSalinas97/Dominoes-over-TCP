@@ -574,20 +574,32 @@ void DominoesServer::handlePasoTurnoCommand(int clientSocketD) {
 }
 
 void DominoesServer::handleRobarFichaCommand(int clientSocketD) {
-    User user = usersManager.getUser(clientSocketD);
+    User *user = usersManager.getUserPtr(clientSocketD);
+    DominoesBoard *dominoesBoard = user->getDominoesBoard();
 
-    if (!user.isPlaying()) {
+    if (!user->isPlaying()) {
         sendMessage(clientSocketD, "-ERR. Todavía no estás jugando");
         return;
     }
 
-    if (!user.isMyTurn()) {
+    if (!user->isMyTurn()) {
         sendMessage(clientSocketD, "-ERR. No es tu turno");
         return;
     }
 
-    // TODO
-    sendMessage(clientSocketD, "*INFO. FUNCIONALIDAD SIN IMPLEMENTAR"); // TODO: Eliminar
+    if (dominoesBoard->sleepingTilesIsEmpty()) {
+        sendMessage(clientSocketD, "-ERR. No quedan más fichas en el montón");
+        return;
+    }
+
+    if (dominoesBoard->canPlayerPlay(*user)) {
+        sendMessage(clientSocketD, "-ERR. No es necesario robar ficha");
+        return;
+    }
+
+    // Cogemos la ficha y la añadimos a las fichas del usuario
+    const DominoTile &sleepingTile = dominoesBoard->takeSleepingTile();
+    user->getDominoTiles().push_back(sleepingTile);
 }
 
 void DominoesServer::sendHelp(int clientSocketD) {

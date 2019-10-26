@@ -59,6 +59,8 @@ public:
 
     bool checkWinner(User *player1, User *player2, User *winner);
 
+    const DominoTile &takeSleepingTile();
+
 private:
     list<DominoTile> sleepingTiles; /** */
     list<DominoTile> boardTiles;    /** */

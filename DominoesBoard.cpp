@@ -182,3 +182,10 @@ bool DominoesBoard::checkWinner(User *player1, User *player2, User *winner) {
 
     return false;
 }
+
+const DominoTile &DominoesBoard::takeSleepingTile() {
+    auto *d = new DominoTile(sleepingTiles.back().getLeft(),
+                             sleepingTiles.back().getRight());
+    sleepingTiles.pop_back();
+    return *d;
+}
