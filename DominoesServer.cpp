@@ -340,11 +340,13 @@ void DominoesServer::handleRegistroCommand(int clientSocketD, const string &user
         return;
     }
 
-    if (usersManager.registerUser(clientSocketD, username, password))
+    if (usersManager.registerUser(clientSocketD, username, password)) {
         sendMessage(clientSocketD, "+OK. Usuario registrado y sesión iniciada.");
-    else
+        cout << "\t* Nuevo usuario registrado: " << username << " *" << endl;
+    } else {
         sendMessage(clientSocketD, "-ERR. Error en el registro. Pruebe con otro "
                                    "nombre de usuario");
+    }
 }
 
 void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
