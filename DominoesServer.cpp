@@ -651,7 +651,6 @@ void DominoesServer::handleSalirCommand(int clientSocketD) {
 }
 
 bool DominoesServer::checkWinners(User *user, User *opponent, DominoesBoard *dominoesBoard) {
-    // TODO: Comprobar si funciona
     User *winner;
     if (dominoesBoard->checkWinner(user, opponent, &winner)) {
         // La partida ha terminado
