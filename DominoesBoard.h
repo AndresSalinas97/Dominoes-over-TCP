@@ -33,6 +33,16 @@ public:
 
     static User *whoStarts(User *player1, User *player2);
 
+    inline bool isEmpty() const {
+        return tableTiles.empty();
+    }
+
+    unsigned short getLeftValue() const;
+
+    unsigned short getRightValue() const;
+
+    bool canPlayerPlay(const list<DominoTile> &dominoTiles);
+
 private:
     list<DominoTile> sleepingTiles;
     list<DominoTile> tableTiles;

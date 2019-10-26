@@ -82,3 +82,28 @@ User *DominoesBoard::whoStarts(User *player1, User *player2) {
     else
         return player2;
 }
+
+bool DominoesBoard::canPlayerPlay(const list<DominoTile> &dominoTiles) {
+    if (isEmpty())
+        return true;
+
+    for (auto &dominoTile : dominoTiles)
+        if (dominoTile.has(getLeftValue()) || dominoTile.has(getRightValue()))
+            return true;
+
+    return false;
+}
+
+unsigned short DominoesBoard::getLeftValue() const {
+    if (isEmpty())
+        return -1;
+
+    return tableTiles.begin()->getLeft();
+}
+
+unsigned short DominoesBoard::getRightValue() const {
+    if (isEmpty())
+        return -1;
+
+    return tableTiles.back().getRight();
+}

@@ -63,6 +63,13 @@ public:
      */
     void flip();
 
+    /**
+     * Devuelve true si la ficha contiene el valor v en alguno de sus lados.
+     */
+    inline bool has(unsigned short v) const {
+        return (left == v || right == v);
+    }
+
 private:
     unsigned short left;  // Valor del lado izquierdo de la ficha.
     unsigned short right; // Valor del lado derecho de la ficha.
