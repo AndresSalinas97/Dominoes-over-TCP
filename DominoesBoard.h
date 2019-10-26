@@ -33,8 +33,12 @@ public:
 
     static User *whoStarts(User *player1, User *player2);
 
-    inline bool isEmpty() const {
+    inline bool boardIsEmpty() const {
         return boardTiles.empty();
+    }
+
+    inline bool sleepingTilesIsEmpty() const {
+        return sleepingTiles.empty();
     }
 
     unsigned short getLeftValue() const;
@@ -48,6 +52,10 @@ public:
     bool placeTileLeft(const DominoTile &dominoTile);
 
     bool placeTileRight(const DominoTile &dominoTile);
+
+    inline const list<DominoTile> &getBoardTiles() const {
+        return boardTiles;
+    }
 
 private:
     list<DominoTile> sleepingTiles;

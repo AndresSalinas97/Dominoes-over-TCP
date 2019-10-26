@@ -84,7 +84,7 @@ User *DominoesBoard::whoStarts(User *player1, User *player2) {
 }
 
 bool DominoesBoard::canPlayerPlay(const list<DominoTile> &dominoTiles) {
-    if (isEmpty())
+    if (boardIsEmpty())
         return true;
 
     for (auto &dominoTile : dominoTiles)
@@ -95,21 +95,21 @@ bool DominoesBoard::canPlayerPlay(const list<DominoTile> &dominoTiles) {
 }
 
 unsigned short DominoesBoard::getLeftValue() const {
-    if (isEmpty())
+    if (boardIsEmpty())
         return -1;
 
     return boardTiles.begin()->getLeft();
 }
 
 unsigned short DominoesBoard::getRightValue() const {
-    if (isEmpty())
+    if (boardIsEmpty())
         return -1;
 
     return boardTiles.back().getRight();
 }
 
 bool DominoesBoard::placeTileCenter(const DominoTile &dominoTile) {
-    if (!isEmpty())
+    if (!boardIsEmpty())
         return false;
 
     boardTiles.push_front(dominoTile);
@@ -118,7 +118,7 @@ bool DominoesBoard::placeTileCenter(const DominoTile &dominoTile) {
 }
 
 bool DominoesBoard::placeTileLeft(const DominoTile &dominoTile) {
-    if (isEmpty())
+    if (boardIsEmpty())
         return false;
 
     if (dominoTile.getRight() == getLeftValue()) {
@@ -137,7 +137,7 @@ bool DominoesBoard::placeTileLeft(const DominoTile &dominoTile) {
 }
 
 bool DominoesBoard::placeTileRight(const DominoTile &dominoTile) {
-    if (isEmpty())
+    if (boardIsEmpty())
         return false;
 
     if (dominoTile.getLeft() == getRightValue()) {
