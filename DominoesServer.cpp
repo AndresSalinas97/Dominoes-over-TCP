@@ -600,6 +600,11 @@ void DominoesServer::handleRobarFichaCommand(int clientSocketD) {
     // Cogemos la ficha y la añadimos a las fichas del usuario
     const DominoTile &sleepingTile = dominoesBoard->takeSleepingTile();
     user->getDominoTiles().push_back(sleepingTile);
+
+    // Notificamos al usuario
+    ostringstream os;
+    os << "FICHA " << sleepingTile;
+    sendMessage(clientSocketD, os.str().c_str());
 }
 
 void DominoesServer::sendHelp(int clientSocketD) {
