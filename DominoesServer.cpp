@@ -362,6 +362,11 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
         return;
     }
 
+    if (user->isPlaying()) {
+        sendMessage(clientSocketD, "-ERR. Ya estás jugando");
+        return;
+    }
+
     if (dominoesBoards.size() >= MAX_DOMINOES) {
         sendMessage(clientSocketD, "-ERR. Se ha superado el número máximo de "
                                    "partidas");
@@ -372,6 +377,8 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
     for (auto &opponent : usersManager.getUsers())
         if (opponent.isWaiting() && opponent.getSocketDescriptor() != clientSocketD) {
             // Hemos encontrado un oponente
+
+            ostringstream os;
 
             // Creamos el tablero
             dominoesBoards.push_back(*(new DominoesBoard));
@@ -390,7 +397,6 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
 
             // Notificamos a ambos
             sendMessage(clientSocketD, "+OK. Empieza la partida");
-            ostringstream os;
             os << "+INFO. Jugarás contra " << opponent.getUsername();
             sendMessage(clientSocketD, os.str().c_str());
             sendMessage(opponent.getSocketDescriptor(), "+OK. Empieza la partida");
@@ -406,21 +412,47 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
             sendTiles(*user);
             sendTiles(opponent);
 
-            // Averiguamos que jugador empieza la partida
+            // El jugador con la mejor ficha empieza la partida y esta ficha se
+            // coloca automáticamente
             User *firstPlayer = DominoesBoard::whoStarts(user, &opponent);
-            firstPlayer->setMyTurn(true);
-            sendMessage(firstPlayer->getSocketDescriptor(),
-                        "+INFO. Tienes la mejor ficha");
+            DominoTile bestTile = DominoesBoard::getBestDominoTile(firstPlayer->getDominoTiles());
+
             sendMessage(firstPlayer->getSocketDescriptor(),
                         "+OK. Turno de partida");
+            sendMessage(firstPlayer->getSocketDescriptor(),
+                        "+INFO. Empiezas la partida porque tienes la mejor ficha");
+            sendMessage(firstPlayer->getSocketDescriptor(),
+                        "+INFO. Tu mejor ficha se coloca automáticamente");
+            os.str("");
+            os.clear();
+            os << "COLOCAR-FICHA " << bestTile;
+            sendMessage(firstPlayer->getSocketDescriptor(), os.str().c_str());
+
+            firstPlayer->getDominoesBoard()->placeTileCenter(bestTile);
+
+            // Eliminamos la ficha que el jugador acaba de colocar
+            for (auto it = firstPlayer->getDominoTiles().begin(); it != firstPlayer->getDominoTiles().end(); it++)
+                if (*it == bestTile) {
+                    firstPlayer->getDominoTiles().erase(it);
+                    break;
+                }
+
+            sendBoard(*firstPlayer);
+            sendBoard(*firstPlayer->getOpponent());
+
+            // Pasamos el turno al oponente
+            firstPlayer->getOpponent()->setMyTurn(true);
+            sendMessage(firstPlayer->getOpponent()->getSocketDescriptor(),
+                        "+OK. Turno de partida");
+            sendTiles(*firstPlayer->getOpponent());
 
             return;
         }
 
     // Si no encontramos un oponente nos quedamos a la espera
     user->setWaiting(true);
-    sendMessage(clientSocketD, "+OK. Petición recibida. Quedamos a la espera de "
-                               "más jugadores");
+    sendMessage(clientSocketD,
+                "+OK. Petición recibida. Quedamos a la espera de más jugadores");
 }
 
 void DominoesServer::handleColocarFichaCommand(int clientSocketD,
@@ -506,6 +538,14 @@ void DominoesServer::sendTiles(User &user) {
     ostringstream os;
     os << "FICHAS ";
     for (auto &dominoTile : user.getDominoTiles())
+        os << dominoTile;
+    sendMessage(user.getSocketDescriptor(), os.str().c_str());
+}
+
+void DominoesServer::sendBoard(User &user) {
+    ostringstream os;
+    os << "TABLERO: ";
+    for (auto &dominoTile : user.getDominoesBoard()->getBoardTiles())
         os << dominoTile;
     sendMessage(user.getSocketDescriptor(), os.str().c_str());
 }

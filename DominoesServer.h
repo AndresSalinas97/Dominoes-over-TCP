@@ -147,6 +147,11 @@ private:
     void sendTiles(User &user);
 
     /**
+     * Envía al clientSocketD especificado las fichas del tablero.
+     */
+    void sendBoard(User &user);
+
+    /**
      * Acciones a realizar cuando un cliente envía el comando SALIR
      */
     void handleSalirCommand(int clientSocketD);
