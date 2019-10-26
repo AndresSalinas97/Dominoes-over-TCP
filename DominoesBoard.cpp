@@ -18,8 +18,8 @@ void DominoesBoard::shuffle(list<DominoTile> &player1Tiles,
     vector<DominoTile> temp;
 
     // Generamos las 28 fichas y las añadimos al vector temp
-    for (int i = 0; i <= 6; i++)
-        for (int j = i; j <= 6; j++)
+    for (int i = 6; i >= 0; i--)
+        for (int j = i; j >= 0; j--)
             temp.push_back(*new DominoTile(i, j));
 
     // Barajamos las fichas
