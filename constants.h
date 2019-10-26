@@ -20,8 +20,8 @@ using namespace std;
 
 #define MSG_SIZE 250     /** Longitud máxima de los mensajes entre cliente y servidor. */
 
-#define MAX_CLIENTS 5    /** Número máximo clientes conectados al servidor. */
-#define MAX_DOMINOES 2   /** Número máximo de partidas simultáneas. */
+#define MAX_CLIENTS 30   /** Número máximo clientes conectados al servidor. */
+#define MAX_DOMINOES 10  /** Número máximo de partidas simultáneas. */
 
 const string USERS_FILE_PATH = "./users.csv"; /** Path del fichero donde se almacenan
                                                   los usuarios y contraseñas en TEXTO
