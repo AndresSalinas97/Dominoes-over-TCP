@@ -664,8 +664,9 @@ bool DominoesServer::checkWinners(User *user, User *opponent, DominoesBoard *dom
         } else {
             // Tenemos ganador
             ostringstream os;
-            os << "OK. Partida Finalizada. " << winner->getUsername()
+            os << "OK. Partida Finalizada. El usuario " << winner->getUsername()
                << " ha ganado la partida";
+            sendMessage(winner->getSocketDescriptor(), "+INFO. HAS GANADO!!");
             sendMessage(winner->getSocketDescriptor(), os.str().c_str());
             sendMessage(winner->getOpponent()->getSocketDescriptor(), os.str().c_str());
         }
