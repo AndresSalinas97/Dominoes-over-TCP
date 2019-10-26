@@ -12,7 +12,7 @@
 void DominoTile::flip() {
     unsigned short temp = right;
     right = left;
-    left = right;
+    left = temp;
 }
 
 bool DominoTile::operator==(const DominoTile &dominoTile) {
