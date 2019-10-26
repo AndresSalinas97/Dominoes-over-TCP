@@ -118,8 +118,7 @@ public:
     const DominoTile &takeSleepingTile();
 
 private:
-    list<DominoTile> sleepingTiles; /** Lista de fichas del montón de fichas
-                                        para robar. */
+    list<DominoTile> sleepingTiles; /** Lista de fichas del montón de fichas para robar. */
     list<DominoTile> boardTiles;    /** Lista de fichas sobre el tablero. */
 
     /**

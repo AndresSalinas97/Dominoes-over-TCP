@@ -14,7 +14,7 @@
 
 
 /**
- * @class ClientSocket: Abre, habilita y cierra sockets para el cliente.
+ * @class ClientSocket: Abre, habilita y cierra sockets cliente.
  */
 class ClientSocket : public Socket {
 public:

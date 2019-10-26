@@ -23,7 +23,7 @@ using namespace std;
 
 
 /**
- * @class DominoesServer: clase para gestionar el servidor del juego del Dominó.
+ * @class DominoesServer: Clase para gestionar el servidor del juego del Dominó.
  */
 class DominoesServer {
 public:
@@ -147,7 +147,7 @@ private:
     static void sendTiles(User &user);
 
     /**
-     * Envía al clientSocketD especificado las fichas del tablero.
+     * Envía al al usuario especificado las fichas del tablero.
      */
     static void sendBoard(User &user);
 

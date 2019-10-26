@@ -52,7 +52,7 @@ void DominoesServer::start() {
         for (int activeSocketD = 0; activeSocketD < FD_SETSIZE; activeSocketD++) {
             // Recorremos todos los descriptores posibles
             if (FD_ISSET(activeSocketD, &auxFDS)) {
-                // Tenemos nuevos datos en el socket i
+                // Tenemos nuevos datos en el socket activeSocketD
                 if (activeSocketD == 0) {
                     // El usuario ha tecleado un mensaje
                     handleUserInput();
@@ -282,7 +282,7 @@ void DominoesServer::printStats() const {
 
     cout << "\t\tClientes conectados: " << usersManager.getNUsers() << endl;
     cout << "\t\tPartidas en curso: " << dominoesBoards.size() << endl;
-    cout << "\t\tClientes registrados: " << usersManager.getNRegisteredUsers() << endl;
+    cout << "\t\tUsuarios registrados: " << usersManager.getNRegisteredUsers() << endl;
 }
 
 void DominoesServer::printHelp() {
@@ -363,8 +363,7 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
     }
 
     if (dominoesBoards.size() >= MAX_DOMINOES) {
-        sendMessage(clientSocketD, "-ERR. Se ha superado el número máximo de "
-                                   "partidas");
+        sendMessage(clientSocketD, "-ERR. Se ha superado el número máximo de  partidas");
         return;
     }
 
@@ -392,12 +391,12 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
 
             // Notificamos a ambos
             sendMessage(clientSocketD, "+OK. Empieza la partida");
-            os << "+INFO. Jugarás contra " << opponent.getUsername();
+            os << "*INFO. Jugarás contra " << opponent.getUsername();
             sendMessage(clientSocketD, os.str().c_str());
             sendMessage(opponent.getSocketDescriptor(), "+OK. Empieza la partida");
             os.str("");
             os.clear();
-            os << "+INFO. Jugarás contra " << user->getUsername();
+            os << "*INFO. Jugarás contra " << user->getUsername();
             sendMessage(opponent.getSocketDescriptor(), os.str().c_str());
 
             // Repartimos las fichas
@@ -416,15 +415,15 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
             sendMessage(firstPlayer->getSocketDescriptor(),
                         "+OK. Turno de partida");
             sendMessage(firstPlayer->getSocketDescriptor(),
-                        "+INFO. Empiezas la partida porque tienes la mejor ficha");
+                        "*INFO. Empiezas la partida porque tienes la mejor ficha");
             sendMessage(firstPlayer->getSocketDescriptor(),
-                        "+INFO. Tu mejor ficha se coloca automáticamente");
+                        "*INFO. Tu mejor ficha se coloca automáticamente");
             os.str("");
             os.clear();
             os << "COLOCAR-FICHA " << bestTile;
             sendMessage(firstPlayer->getSocketDescriptor(), os.str().c_str());
 
-            // Colocamos la ficha
+            // Colocamos la primera ficha
             firstPlayer->getDominoesBoard()->placeTile(bestTile);
 
             // Eliminamos la ficha que el jugador acaba de colocar
@@ -480,7 +479,7 @@ void DominoesServer::handleColocarFichaCommand(int clientSocketD,
     getline(ss, side);
 
     if (side != "izquierda" && side != "derecha") {
-        sendMessage(clientSocketD, "ERR. Formato no válido");
+        sendMessage(clientSocketD, "-ERR. Formato no válido");
         return;
     }
 
@@ -490,7 +489,7 @@ void DominoesServer::handleColocarFichaCommand(int clientSocketD,
         if (d == dominoTile)
             playerHasTheTile = true;
     if (!playerHasTheTile) {
-        sendMessage(clientSocketD, "ERR. No tienes esa ficha");
+        sendMessage(clientSocketD, "-ERR. No tienes esa ficha");
         return;
     }
 
@@ -503,7 +502,7 @@ void DominoesServer::handleColocarFichaCommand(int clientSocketD,
     }
 
     if (!ok) {
-        sendMessage(clientSocketD, "ERR. La ficha no puede ser colocada");
+        sendMessage(clientSocketD, "-ERR. La ficha no puede ser colocada");
         return;
     }
 
@@ -657,15 +656,15 @@ bool DominoesServer::checkWinners(User *user, User *opponent, DominoesBoard *dom
         if (winner == nullptr) {
             // Tenemos empate
             sendMessage(user->getSocketDescriptor(),
-                        "OK. Partida Finalizada. Tenemos un empate");
+                        "+OK. Partida Finalizada. Tenemos un empate");
             sendMessage(opponent->getSocketDescriptor(),
-                        "OK. Partida Finalizada. Tenemos un empate");
+                        "+OK. Partida Finalizada. Tenemos un empate");
         } else {
             // Tenemos ganador
+            sendMessage(winner->getSocketDescriptor(), "*INFO. HAS GANADO!!");
             ostringstream os;
-            os << "OK. Partida Finalizada. El usuario " << winner->getUsername()
+            os << "+OK. Partida Finalizada. El usuario " << winner->getUsername()
                << " ha ganado la partida";
-            sendMessage(winner->getSocketDescriptor(), "+INFO. HAS GANADO!!");
             sendMessage(winner->getSocketDescriptor(), os.str().c_str());
             sendMessage(winner->getOpponent()->getSocketDescriptor(), os.str().c_str());
         }

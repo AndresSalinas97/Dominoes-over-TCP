@@ -12,7 +12,6 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
-#include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -22,7 +21,6 @@ using namespace std;
 
 void ClientSocket::prepare(const char *serverIPAddress) {
     // Se rellenan los campos de la estructura de la dirección del servidor
-    // TODO: Try to get the server address by its name (instead of IP)
     struct sockaddr_in serverAddress = {};
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons(SERVER_PORT);

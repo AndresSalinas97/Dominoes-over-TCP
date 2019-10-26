@@ -21,7 +21,7 @@ using namespace std;
 
 
 /**
- * @class Socket: Base para las clases ServerSocket y ClientSocket
+ * @class Socket: Base para las clases ServerSocket y ClientSocket.
  */
 class Socket {
 protected:

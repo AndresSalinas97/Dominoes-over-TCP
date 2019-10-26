@@ -13,8 +13,7 @@
 #include <random>
 
 
-void DominoesBoard::shuffle(list<DominoTile> &player1Tiles,
-                            list<DominoTile> &player2Tiles) {
+void DominoesBoard::shuffle(list<DominoTile> &player1Tiles, list<DominoTile> &player2Tiles) {
     vector<DominoTile> temp;
 
     // Generamos las 28 fichas y las añadimos al vector temp
@@ -57,7 +56,7 @@ int DominoesBoard::getDominoTileScore(const DominoTile &dominoTile) {
 }
 
 const DominoTile &DominoesBoard::getBestDominoTile(const list<DominoTile> &dominoes) {
-    const DominoTile *bestTile = nullptr;
+    const DominoTile *bestTile = new DominoTile(-1, -1);
     int bestScore = 0;
     int score;
 
