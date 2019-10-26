@@ -39,7 +39,6 @@ void DominoesBoard::shuffle(list<DominoTile> &player1Tiles,
         sleepingTiles.push_back(temp[i]);
 }
 
-
 int DominoesBoard::getDominoTileScore(const DominoTile &dominoTile) {
     if (dominoTile.getLeft() == dominoTile.getRight()) {
         return dominoTile.getLeft() + 1000;
@@ -108,7 +107,7 @@ unsigned short DominoesBoard::getRightValue() const {
     return boardTiles.back().getRight();
 }
 
-bool DominoesBoard::placeTileCenter(const DominoTile &dominoTile) {
+bool DominoesBoard::placeTile(const DominoTile &dominoTile) {
     if (!boardIsEmpty())
         return false;
 
@@ -126,6 +125,7 @@ bool DominoesBoard::placeTileLeft(const DominoTile &dominoTile) {
         return true;
     }
 
+    // Le tenemos que dar la vuelta a la ficha
     if (dominoTile.getLeft() == getLeftValue()) {
         DominoTile temp = dominoTile;
         temp.flip();
@@ -145,6 +145,7 @@ bool DominoesBoard::placeTileRight(const DominoTile &dominoTile) {
         return true;
     }
 
+    // Le tenemos que dar la vuelta a la ficha
     if (dominoTile.getRight() == getRightValue()) {
         DominoTile temp = dominoTile;
         temp.flip();
@@ -156,13 +157,13 @@ bool DominoesBoard::placeTileRight(const DominoTile &dominoTile) {
 }
 
 bool DominoesBoard::checkWinner(User *player1, User *player2, User **winner) {
-    // El jugador 1 coloca todas sus fichas
+    // El jugador 1 ha colocado todas sus fichas
     if (player1->getDominoTiles().empty()) {
         *winner = player1;
         return true;
     }
 
-    // El jugador 2 coloca todas sus fichas
+    // El jugador 2 ha colocado todas sus fichas
     if (player2->getDominoTiles().empty()) {
         *winner = player2;
         return true;

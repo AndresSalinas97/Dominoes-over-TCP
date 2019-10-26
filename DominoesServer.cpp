@@ -425,7 +425,7 @@ void DominoesServer::handleIniciarPartidaCommand(int clientSocketD) {
             sendMessage(firstPlayer->getSocketDescriptor(), os.str().c_str());
 
             // Colocamos la ficha
-            firstPlayer->getDominoesBoard()->placeTileCenter(bestTile);
+            firstPlayer->getDominoesBoard()->placeTile(bestTile);
 
             // Eliminamos la ficha que el jugador acaba de colocar
             for (auto it = firstPlayer->getDominoTiles().begin();
