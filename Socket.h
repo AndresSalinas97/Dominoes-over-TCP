@@ -63,7 +63,7 @@ public:
     }
 
 private:
-    int socketDescriptor; // Descriptor del socket
+    int socketDescriptor; /** Descriptor del socket. */
 };
 
 

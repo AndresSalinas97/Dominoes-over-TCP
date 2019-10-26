@@ -60,8 +60,8 @@ public:
     bool checkWinner(User *player1, User *player2, User *winner);
 
 private:
-    list<DominoTile> sleepingTiles;
-    list<DominoTile> boardTiles;
+    list<DominoTile> sleepingTiles; /** */
+    list<DominoTile> boardTiles;    /** */
 
     /**
      * Devuelve la "puntuación" de la ficha de dominó introducida.

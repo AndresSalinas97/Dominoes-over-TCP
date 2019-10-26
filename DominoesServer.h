@@ -45,10 +45,10 @@ public:
     void end();
 
 private:
-    Socket serverSocket;                // Objeto Socket del servidor
-    fd_set readFDS{};                   // Set de descriptores para la función select()
-    UsersManager usersManager;          // Mánager de usuarios
-    list<DominoesBoard> dominoesBoards; // Tableros de dominó donde los usuarios juegan
+    Socket serverSocket;                /** Objeto Socket del servidor. */
+    fd_set readFDS{};                   /** Set de descriptores para la función select(). */
+    UsersManager usersManager;          /** Mánager de usuarios. */
+    list<DominoesBoard> dominoesBoards; /** Tableros de dominó donde los usuarios juegan. */
 
     /**
      * Envía el mensaje introducido al cliente con el socketD introducido.
@@ -100,38 +100,38 @@ private:
     static void printHelp();
 
     /**
-     * Acciones a realizar cuando un cliente envía el comando USUARIO
+     * Acciones a realizar cuando un cliente envía el comando USUARIO.
      */
     void handleUsuarioCommand(int clientSocketD, const string &username);
 
     /**
-     * Acciones a realizar cuando un cliente envía el comando PASSWORD
+     * Acciones a realizar cuando un cliente envía el comando PASSWORD.
      */
     void handlePasswordCommand(int clientSocketD, const string &password);
 
     /**
-     * Acciones a realizar cuando un cliente envía el comando REGISTRO
+     * Acciones a realizar cuando un cliente envía el comando REGISTRO.
      */
     void handleRegistroCommand(int clientSocketD, const string &username,
                                const string &password);
 
     /**
-     * Acciones a realizar cuando un cliente envía el comando INICIAR-PARTIDA
+     * Acciones a realizar cuando un cliente envía el comando INICIAR-PARTIDA.
      */
     void handleIniciarPartidaCommand(int clientSocketD);
 
     /**
-     * Acciones a realizar cuando un cliente envía el comando COLOCAR-FICHA
+     * Acciones a realizar cuando un cliente envía el comando COLOCAR-FICHA.
      */
     void handleColocarFichaCommand(int clientSocketD, const string &dominoAndSide);
 
     /**
-     * Acciones a realizar cuando un cliente envía el comando PASO-TURNO
+     * Acciones a realizar cuando un cliente envía el comando PASO-TURNO.
      */
     void handlePasoTurnoCommand(int clientSocketD);
 
     /**
-     * Acciones a realizar cuando un cliente envía el comando ROBAR-FICHA
+     * Acciones a realizar cuando un cliente envía el comando ROBAR-FICHA.
      */
     void handleRobarFichaCommand(int clientSocketD);
 
@@ -152,7 +152,7 @@ private:
     void sendBoard(User &user);
 
     /**
-     * Acciones a realizar cuando un cliente envía el comando SALIR
+     * Acciones a realizar cuando un cliente envía el comando SALIR.
      */
     void handleSalirCommand(int clientSocketD);
 };

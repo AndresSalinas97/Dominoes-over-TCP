@@ -112,7 +112,7 @@ public:
     /**
      * Devuelve una referencia a la lista de fichas del usuario.
      */
-    inline list <DominoTile> &getDominoTiles() {
+    inline list<DominoTile> &getDominoTiles() {
         return dominoTiles;
     }
 
@@ -158,21 +158,39 @@ public:
         User::myTurn = myTurn;
     }
 
+    /**
+     * Restablece el estado de un usuario con la sesión iniciada (se restablecen
+     * todos los atributos excepto username, usernameLogged y passwordLogged).
+     */
+    inline void resetLoggedInUserState() {
+        waiting = false;
+        playing = false;
+        myTurn = false;
+        dominoTiles.clear();
+        opponent = nullptr;
+        dominoesBoard = nullptr;
+    }
+
 private:
-    int socketDescriptor;        // Descriptor del socket en el que se conectó
-    // el usuario.
-    string username = "";        // Nombre de usuario.
-    bool usernameLogged = false; // Indica si el usuario ha introducido su
-    // username correctamente
-    bool passwordLogged = false; // Indica si el usuario ha introducido su
-    // contraseña correctamente
-    bool waiting = false;        // Indica si el usuario está buscando partida
-    bool playing = false;        // Indica si el usuario está jugando
-    bool myTurn = false;         // Indica si es el turno del usuario
-    list <DominoTile> dominoTiles;          // Fichas de dominó del jugador
-    DominoesBoard *dominoesBoard = nullptr; // Puntero al tablero de dominó en el
-    // que el usuario está jugando
-    User *opponent = nullptr;               // Puntero al jugador oponente
+    int socketDescriptor;        /** Descriptor del socket en el que se conectó
+                                     el usuario. */
+    string username = "";        /** Nombre de usuario. */
+
+    bool usernameLogged = false; /** Indica si el usuario ha introducido su
+                                     username correctamente. */
+    bool passwordLogged = false; /** Indica si el usuario ha introducido su
+                                     contraseña correctamente. */
+    bool waiting = false;        /** Indica si el usuario está buscando partida. */
+
+    bool playing = false;        /** Indica si el usuario está jugando. */
+
+    bool myTurn = false;         /** Indica si es el turno del usuario. */
+
+    list<DominoTile> dominoTiles;           /** Fichas de dominó del jugador. */
+
+    DominoesBoard *dominoesBoard = nullptr; /** Puntero al tablero de dominó en el
+                                                que el usuario está jugando. */
+    User *opponent = nullptr;               /** Puntero al jugador oponente. */
 };
 
 

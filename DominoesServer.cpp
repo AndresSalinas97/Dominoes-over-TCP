@@ -178,11 +178,7 @@ void DominoesServer::removeClient(int goneClientSocketD) {
     // Si el usuario estaba jugando
     if (goneUser.isPlaying()) {
         // Sacamos al oponente de la partida
-        goneUser.getOpponent()->setMyTurn(false);
-        goneUser.getOpponent()->setPlaying(false);
-        goneUser.getOpponent()->getDominoTiles().clear();
-        goneUser.getOpponent()->setOpponent(nullptr);
-        goneUser.getOpponent()->setDominoesBoard(nullptr);
+        goneUser.getOpponent()->resetLoggedInUserState();
 
         // Notificamos al oponente
         sendMessage(goneUser.getOpponent()->getSocketDescriptor(),
@@ -544,16 +540,8 @@ void DominoesServer::handleColocarFichaCommand(int clientSocketD,
         }
 
         // Terminamos la partida para ambos jugadores
-        user->setMyTurn(false);
-        user->setPlaying(false);
-        user->getDominoTiles().clear();
-        user->setOpponent(nullptr);
-        user->setDominoesBoard(nullptr);
-        opponent->setMyTurn(false);
-        opponent->setPlaying(false);
-        opponent->getDominoTiles().clear();
-        opponent->setOpponent(nullptr);
-        opponent->setDominoesBoard(nullptr);
+        user->resetLoggedInUserState();
+        opponent->resetLoggedInUserState();
 
         // Eliminamos el tablero de la lista de tableros
         removeDominoesBoard(dominoesBoard);
