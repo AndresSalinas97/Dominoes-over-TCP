@@ -558,6 +558,7 @@ void DominoesServer::handleColocarFichaCommand(int clientSocketD,
 
 void DominoesServer::handlePasoTurnoCommand(int clientSocketD) {
     User *user = usersManager.getUserPtr(clientSocketD);
+    DominoesBoard *dominoesBoard = user->getDominoesBoard();
     User *opponent = user->getOpponent();
 
     if (!user->isPlaying()) {
@@ -570,8 +571,13 @@ void DominoesServer::handlePasoTurnoCommand(int clientSocketD) {
         return;
     }
 
-    if (user->getDominoesBoard()->canPlayerPlay(*user)) {
+    if (dominoesBoard->canPlayerPlay(*user)) {
         sendMessage(clientSocketD, "-ERR. No es necesario pasar turno");
+        return;
+    }
+
+    if (!dominoesBoard->canPlayerPlay(*user) && !dominoesBoard->sleepingTilesIsEmpty()) {
+        sendMessage(clientSocketD, "-ERR. Antes debes robar ficha");
         return;
     }
 
