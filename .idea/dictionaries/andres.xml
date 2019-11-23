@@ -1,11 +1,19 @@
 <component name="ProjectDictionaryState">
   <dictionary name="andres">
     <words>
+      <w>clientsocket</w>
       <w>descomentar</w>
+      <w>desconexión</w>
       <w>dominoesboard</w>
       <w>dominoesserver</w>
+      <w>dominotile</w>
+      <w>encriptación</w>
+      <w>especificadores</w>
       <w>instanciada</w>
+      <w>serversocket</w>
+      <w>setsockopt</w>
       <w>stdin</w>
+      <w>usersmanager</w>
     </words>
   </dictionary>
 </component>
