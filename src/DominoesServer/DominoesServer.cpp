@@ -7,7 +7,7 @@
 
 
 #include "DominoesServer.h"
-#include "constants.h"
+#include "../constants.h"
 
 #include <iostream>
 #include <cstring>

@@ -7,7 +7,7 @@
 
 
 #include "ClientSocket.h"
-#include "constants.h"
+#include "../constants.h"
 
 #include <iostream>
 #include <cstdlib>

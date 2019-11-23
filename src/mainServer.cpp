@@ -7,8 +7,8 @@
  */
 
 
-#include "DominoesServer.h"
-#include "ServerSocket.h"
+#include "DominoesServer/DominoesServer.h"
+#include "Socket/ServerSocket.h"
 
 #include <csignal>
 #include <iostream>

@@ -11,8 +11,8 @@
 
 class DominoesBoard; // Para evitar error con clases que se referencian entre sí
 
-#include "DominoesBoard.h"
-#include "DominoTile.h"
+#include "../DominoesGame/DominoesBoard.h"
+#include "../DominoesGame/DominoTile.h"
 
 #include <string>
 #include <list>

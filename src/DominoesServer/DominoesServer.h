@@ -10,9 +10,9 @@
 #define DOMINOES_OVER_TCP_DOMINOESSERVER_H
 
 
-#include "Socket.h"
-#include "User.h"
-#include "UsersManager.h"
+#include "../Socket/Socket.h"
+#include "../User/User.h"
+#include "../User/UsersManager.h"
 
 #include <sys/socket.h>
 #include <string>

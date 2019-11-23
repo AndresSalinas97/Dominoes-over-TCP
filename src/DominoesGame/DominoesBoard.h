@@ -12,7 +12,7 @@
 
 class User; // Para evitar error con clases que se referencian entre sí
 
-#include "User.h"
+#include "../User/User.h"
 #include "DominoTile.h"
 
 #include <list>
