@@ -2,7 +2,7 @@
 
 **Práctica 2 de la Asignatura de Redes.**
 
-Diseño e implementación en C++ del juego del dominó mediante un programa servidor y otro cliente  que se comunican por TCP permitiendo realizar múltiples partidas en las que en cada una de ellas estará compuesta de dos jugadores.
+Juego del dominó para dos jugadores implementado en C++ con un programa servidor y otro cliente que se comunican por TCP de manera que el servidor puede soportar múltiples partidas simultáneas entre varios clientes.
 
 ## Autores
 
