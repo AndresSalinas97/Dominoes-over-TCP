@@ -6,7 +6,7 @@ Juego del dominó para dos jugadores implementado en C++ con un programa servido
 
 ## Autores
 
-* Andrés Salinas Lima (i52salia@uco.es)
+* Andrés Salinas Lima
 
 ## Getting Started
 
