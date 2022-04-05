@@ -118,4 +118,4 @@ Donde *127.0.0.1* es la dirección IP del servidor (en este caso usamos la direc
     * `ROBAR-FICHA`: mensaje para robar una ficha del montón.
     * `FICHA |valor1|valor2|`: mensaje para enviar una ficha a un jugador que haya robado.
     * `SALIR`: mensaje para solicitar salir del juego.
-    * Cualquier otra línea que se escriba no será reconocida por el protocolo como un mensaje válido y generar su correspondiente `-Err.` por parte del servidor.
+    * Cualquier otra línea que se escriba no será reconocida por el protocolo como un mensaje válido y generar su correspondiente `-ERR.` por parte del servidor.
