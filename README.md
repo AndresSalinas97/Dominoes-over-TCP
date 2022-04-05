@@ -4,10 +4,6 @@
 
 Juego del dominó para dos jugadores implementado en C++ con un programa servidor y otro cliente que se comunican por TCP de manera que el servidor puede soportar múltiples partidas simultáneas entre varios clientes.
 
-## Autores
-
-* Andrés Salinas Lima
-
 ## Getting Started
 
 Estas instrucciones le proporcionarán una copia del proyecto en funcionamiento en su máquina local para fines de desarrollo y prueba.
